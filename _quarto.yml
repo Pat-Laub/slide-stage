@@ -7,6 +7,18 @@ project:
 
 # No theme layer here on purpose: the format extension is theme-neutral, so the
 # project default is the bare stage and index.qmd opts into the UNSW look.
-format: slide-stage-revealjs
+# Everything here is presentation taste the extension deliberately leaves alone.
+format:
+  slide-stage-revealjs:
+    output-ext: "slides.html"
+    search: false
+    controls: true
+    controls-tutorial: true
+    navigation-mode: linear
+    transition: fade
+    transition-speed: slow
+    slide-number: c/t
+    preview-links: false
+    code-annotations: none
 
 html-math-method: katex
