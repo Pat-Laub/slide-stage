@@ -1,0 +1,13 @@
+---
+title: "Bare Stage"
+---
+
+## The stage with no theme {#bare-content}
+
+This deck loads the slide-stage format extension and nothing else. It exists to
+prove the extension carries no branding of its own: the rail and the title
+artwork are theme hooks, and with no theme layer they resolve to `transparent`
+and `none`.
+
+The geometry, however, has to come out identical to a themed deck, which is
+what the accompanying test asserts.
