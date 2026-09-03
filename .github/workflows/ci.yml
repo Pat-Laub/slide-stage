@@ -1,0 +1,36 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: quarto-dev/quarto-actions/setup@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium firefox webkit
+      - run: npm run render
+      # Screenshot baselines are per-platform and only the darwin ones are
+      # committed, so the image comparisons run on macOS and the assertions
+      # run everywhere. To add linux baselines, run this job once on ubuntu
+      # with --update-snapshots and commit what it writes.
+      - run: npx playwright test
+        if: matrix.os == 'macos-latest'
+      - run: npx playwright test --grep-invert "renders|fits"
+        if: matrix.os == 'ubuntu-latest'
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report-${{ matrix.os }}
+          path: playwright-report/
+          retention-days: 7

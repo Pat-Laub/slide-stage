@@ -1,0 +1,188 @@
+---
+title: "Slide Stage Fixture"
+subtitle: "A deck whose only job is to be measured"
+author: "slide-stage"
+---
+
+## What this deck is {#what-this-is}
+
+A fixture. Every slide here exists to give the geometry tests something
+real to measure: prose that spans the content frame, mathematics that KaTeX
+must lay out, tables, images, vertical stacks, and the uncounted slides that
+Reveal hides from `getSlides()`.
+
+- It is deliberately wordy, because a layout assertion needs a widest block
+- It is deliberately long, because the overview grid needs more than twenty cards
+- It is deliberately varied, because a preview must match its live slide
+
+## The authored canvas {#authored-canvas}
+
+The outer stage is the one public coordinate system. Live display, overview
+previews and printed pages all share it, and the fit transform only ever
+shrinks the authored page to meet the viewport it happens to land on.
+
+Reveal itself runs embedded inside an inset content frame and does no scaling
+of its own, which is what keeps ink coordinates stable across devices.
+
+## A first equation {#first-equation}
+
+For a random variable $X$ with density $f$, the expectation is
+
+$$ \mathbb{E}[X] = \int_{-\infty}^{\infty} x f(x) \, \mathrm{d}x $$
+
+and the variance follows from it as
+
+$$ \operatorname{Var}(X) = \mathbb{E}[X^2] - \left(\mathbb{E}[X]\right)^2 . $$
+
+## Accents and operators {#accents}
+
+$$ \hat{\beta} = \left(\mathbf{X}^{\top}\mathbf{X}\right)^{-1}\mathbf{X}^{\top}\mathbf{y} $$
+
+$$ \bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i, \qquad \tilde{\mu} = \operatorname*{arg\,min}_{\mu} \sum_{i=1}^{n} (x_i - \mu)^2 $$
+
+## A table of moments {#moments-table}
+
+| Distribution | Mean | Variance |
+|--------------|------|----------|
+| Bernoulli    | $p$  | $p(1-p)$ |
+| Binomial     | $np$ | $np(1-p)$ |
+| Poisson      | $\lambda$ | $\lambda$ |
+| Exponential  | $1/\lambda$ | $1/\lambda^2$ |
+| Normal       | $\mu$ | $\sigma^2$ |
+
+## An image {#an-image}
+
+![A logo, standing in for a figure](unsw-logo.png){width="40%"}
+
+## Prose that fills the frame {#wide-prose}
+
+This paragraph exists so that the widest measurable block on the slide is a
+genuine run of text rather than a heading, because the layout assertions check
+that real prose spans a substantial fraction of the content frame rather than
+collapsing into a corner when the authored units fail to reach the content.
+
+## A vertical stack {#stack-top}
+
+This is the top of a vertical stack. Pressing down should move within it.
+
+## Still in the stack {#stack-middle}
+
+The second slide of the stack. Forward navigation from elsewhere should enter
+a stack at its top, never at the slide last visited inside it.
+
+## The end of the stack {#stack-bottom}
+
+The third and last slide of the stack.
+
+## Building up, step one {#build-one}
+
+- The first point arrives on its own
+
+## Building up, step two {#build-two data-visibility="uncounted"}
+
+- The first point arrives on its own
+- The second point joins it
+
+## Building up, step three {#build-three data-visibility="uncounted"}
+
+- The first point arrives on its own
+- The second point joins it
+- And the third completes the thought
+
+## Lists within lists {#nested-lists}
+
+- A first level item that runs long enough to wrap onto a second line when the
+  content frame is at its authored width
+  - A second level item
+  - Another second level item
+- A closing first level item
+
+## Code on a slide {#code-slide}
+
+```r
+fit <- lm(claims ~ exposure + age, data = portfolio)
+summary(fit)$coefficients
+```
+
+## Two columns {#two-columns}
+
+::: {.columns}
+::: {.column width="50%"}
+The left column carries a paragraph of reasonable length so that the column
+geometry is measurable rather than degenerate.
+:::
+::: {.column width="50%"}
+The right column carries its own paragraph, of a similar length, for the same
+reason as the left.
+:::
+:::
+
+## Quotations {#quotation}
+
+> All models are wrong, but some are useful.
+
+The line above is a blockquote, which the theme styles differently from body
+text and which therefore exercises a separate path through the stylesheet.
+
+## Emphasis and links {#emphasis}
+
+Text can be *emphasised*, **strongly emphasised**, or turned into a
+[link](https://quarto.org) whose colour comes from the theme rather than the
+browser default.
+
+## A longer argument {#longer-argument}
+
+When a deck is authored at a fixed size and shrunk to fit, every length inside
+it is stable. That is the property the tests here defend: a heading is the same
+number of authored units wide on a laptop, a projector and a tablet, and the
+only thing that changes between them is the single scale factor applied to the
+whole page.
+
+## Numbered steps {#numbered-steps}
+
+1. Author the page at a fixed size
+2. Measure the viewport
+3. Apply one uniform transform
+4. Never scale anything else
+
+## Small print {#small-print}
+
+::: {.small}
+Smaller text is used for asides and attributions. It still has to sit inside
+the content frame and still has to appear in an overview preview.
+:::
+
+## Another equation {#second-equation}
+
+$$ \Phi(z) = \frac{1}{\sqrt{2\pi}} \int_{-\infty}^{z} e^{-t^2/2} \, \mathrm{d}t $$
+
+## A wide table {#wide-table}
+
+| Year | Policies | Claims | Ratio | Comment |
+|------|----------|--------|-------|---------|
+| 2019 | 12,400   | 980    | 0.079 | Baseline |
+| 2020 | 13,110   | 1,204  | 0.092 | Unusual |
+| 2021 | 13,880   | 1,015  | 0.073 | Recovery |
+| 2022 | 14,905   | 1,190  | 0.080 | Stable |
+
+## Definitions {#definitions}
+
+A *sample space* is the set of outcomes an experiment can produce. An *event*
+is any subset of that set, and a *probability measure* assigns each event a
+number between zero and one in a way that is countably additive.
+
+## Repetition for the grid {#filler-one}
+
+This slide exists to push the overview grid past twenty cards.
+
+## More repetition {#filler-two}
+
+As does this one.
+
+## Still more {#filler-three}
+
+And this one.
+
+## The last slide {#last-slide}
+
+There is nothing after this.
