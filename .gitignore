@@ -4,6 +4,8 @@ test-results/
 playwright-report/
 .DS_Store
 docs/
+# Quarto leaves these beside a source file when one is rendered on its own.
+*_files/
 
 /.quarto/
 **/*.quarto_ipynb
