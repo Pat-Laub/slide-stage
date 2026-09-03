@@ -54,6 +54,11 @@ body.quarto-light {
 }
 
 .deck-stage {
+  // The single source of truth for the authored page size. deck-stage-open.html
+  // reads these back, so the CSS box and the fit transform cannot drift apart
+  // when a consumer overrides $deck-width / $deck-height.
+  --deck-width: #{$deck-width};
+  --deck-height: #{$deck-height};
   position: absolute;
   left: 50%;
   top: 50%;

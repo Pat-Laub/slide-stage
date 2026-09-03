@@ -41,7 +41,11 @@ format:
 ```
 
 The geometry is likewise `!default` throughout — `$deck-width`, `$deck-height`,
-`$content-left/top/right/bottom`, `$rail-width`, `$artwork-inset`.
+`$content-left/top/right/bottom`, `$rail-width`, `$artwork-inset`. The stylesheet
+is the single source of truth: it publishes `--deck-width` / `--deck-height` on
+the stage element and `deck-stage-open.html` reads them back, so the CSS box and
+the fit transform cannot drift apart. `resized.qmd` is a fixture at 1920 x 1080
+that holds them together.
 
 ## Layout
 
@@ -55,6 +59,7 @@ _extensions/Pat-Laub/slide-stage/
 unsw-theme.scss             the UNSW look, layered on top by index.qmd
 index.qmd                   the themed fixture the geometry tests measure
 bare.qmd                    the same stage with no theme layer at all
+resized.qmd                 the same stage at a different authored size
 tests/                      Playwright, cross-browser
 ```
 

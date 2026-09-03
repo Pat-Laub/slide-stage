@@ -1,0 +1,12 @@
+/*-- scss:defaults --*/
+
+// A deliberately different authored page, used only by resized.qmd. It exists
+// so the tests can prove the stylesheet and the fit transform read the same
+// geometry: override these and both the CSS box and the transform must follow.
+$deck-width: 1920px;
+$deck-height: 1080px;
+$content-left: 160px;
+$content-top: 60px;
+$content-right: 160px;
+$content-bottom: 70px;
+$rail-width: 120px;
