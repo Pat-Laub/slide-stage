@@ -49,11 +49,11 @@ $$ \bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i, \qquad \tilde{\mu} = \operatorname*{
 
 | Distribution | Mean | Variance |
 |--------------|------|----------|
-| Bernoulli    | $p$  | $p(1-p)$ |
-| Binomial     | $np$ | $np(1-p)$ |
-| Poisson      | $\lambda$ | $\lambda$ |
-| Exponential  | $1/\lambda$ | $1/\lambda^2$ |
-| Normal       | $\mu$ | $\sigma^2$ |
+| Bernoulli    | p    | p(1-p)   |
+| Binomial     | np   | np(1-p)  |
+| Poisson      | lam  | lam      |
+| Exponential  | 1/lam | 1/lam^2 |
+| Normal       | mu   | sigma^2  |
 
 ## An image {#an-image}
 

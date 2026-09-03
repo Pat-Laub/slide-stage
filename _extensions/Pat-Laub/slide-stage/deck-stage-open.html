@@ -15,12 +15,16 @@
     }
   })();
 
-  // The authored page. Three times the old 1248 x 702, so the deck lays out
-  // and rasterises at 4K and the fit transform below only ever shrinks it:
-  // Safari magnifies an already-rasterised layer rather than re-rendering it,
-  // which is what made any scale above 1 look soft.
-  var DECK_W = 3744;
-  var DECK_H = 2106;
+  // The authored page, read from the custom properties slide-stage.scss puts
+  // on this element so the stylesheet stays the single source of truth. Three
+  // times the old 1248 x 702 by default, so the deck lays out and rasterises at
+  // 4K and the fit transform below only ever shrinks it: Safari magnifies an
+  // already-rasterised layer rather than re-rendering it, which is what made
+  // any scale above 1 look soft. The fallbacks are that default, for the case
+  // where the stylesheet has not applied.
+  var authored = getComputedStyle(stage);
+  var DECK_W = parseFloat(authored.getPropertyValue('--deck-width')) || 3744;
+  var DECK_H = parseFloat(authored.getPropertyValue('--deck-height')) || 2106;
   var PHONE_MAX = 600;
 
   function viewportSize() {

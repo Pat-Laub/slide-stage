@@ -1,0 +1,14 @@
+---
+title: "Resized Stage"
+format:
+  slide-stage-revealjs:
+    theme:
+      - resized-theme.scss
+---
+
+## A stage at a different authored size {#resized-content}
+
+This deck overrides the stage geometry to 1920 x 1080. Both the CSS box and the
+JavaScript fit transform have to follow it, which is the property the test
+asserts: the stylesheet is the single source of truth and the transform reads
+it back.

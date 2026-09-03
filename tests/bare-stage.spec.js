@@ -65,3 +65,43 @@ test('the themed deck does carry the branding', async ({ page }) => {
   expect(themed.rail.background).toBe('rgb(254, 220, 0)');
   expect(themed.artwork.image).toContain('svg');
 });
+
+// The stylesheet is the single source of truth for the authored page: it
+// publishes --deck-width / --deck-height on the stage and deck-stage-open.html
+// reads them back. Before that they were independent constants, so overriding
+// the SCSS moved the CSS box while the fit transform kept scaling the old
+// rectangle -- a deck that letterboxes wrongly with every assertion still green.
+test('overriding the authored size moves the box and the transform together', async ({ browser }) => {
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await context.newPage();
+  await page.goto('/docs/resized.slides.html');
+  await page.waitForFunction(() => window.Reveal && Reveal.isReady());
+
+  const measured = await page.evaluate(() => {
+    const stage = document.querySelector('[data-deck-stage]');
+    const style = getComputedStyle(stage);
+    return {
+      authored: [stage.offsetWidth, stage.offsetHeight],
+      custom: [
+        parseFloat(style.getPropertyValue('--deck-width')),
+        parseFloat(style.getPropertyValue('--deck-height'))
+      ],
+      // What the fit calculation believes the page is: at a scale of 1 the
+      // rectangle it fits is exactly the authored page.
+      fitAt: stage.deckFitForViewport(1920, 1080)
+    };
+  });
+
+  expect(measured.authored).toEqual([1920, 1080]);
+  expect(measured.custom).toEqual([1920, 1080]);
+  // A viewport exactly the authored size must come out at scale 1: that only
+  // holds if the transform is fitting the same rectangle the CSS box drew.
+  expect(measured.fitAt.scale).toBeCloseTo(1, 3);
+  expect(measured.fitAt.rotate).toBe(false);
+
+  // And it still fills the viewport it is actually given.
+  const box = await page.locator('[data-deck-stage]').boundingBox();
+  expect(box.width / box.height).toBeCloseTo(16 / 9, 2);
+  expect(Math.max(box.width / 1440, box.height / 900)).toBeCloseTo(1, 2);
+  await context.close();
+});
