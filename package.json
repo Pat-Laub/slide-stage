@@ -1,0 +1,14 @@
+{
+  "name": "slide-stage-tests",
+  "private": true,
+  "scripts": {
+    "render": "quarto render example",
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "test:ipad": "python3 scripts/ipad_test.py"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0"
+  }
+}
