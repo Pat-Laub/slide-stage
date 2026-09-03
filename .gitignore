@@ -4,3 +4,6 @@ test-results/
 playwright-report/
 .DS_Store
 docs/
+
+/.quarto/
+**/*.quarto_ipynb

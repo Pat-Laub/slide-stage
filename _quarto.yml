@@ -1,0 +1,11 @@
+project:
+  type: default
+  output-dir: docs
+  render:
+    - index.qmd
+
+format:
+  slide-stage-revealjs:
+    logo: unsw-logo.png
+
+html-math-method: katex
