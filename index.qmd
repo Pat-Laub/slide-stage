@@ -2,6 +2,11 @@
 title: "Slide Stage Fixture"
 subtitle: "A deck whose only job is to be measured"
 author: "slide-stage"
+format:
+  slide-stage-revealjs:
+    theme:
+      - unsw-theme.scss
+    logo: unsw-logo.png
 ---
 
 ## What this deck is {#what-this-is}

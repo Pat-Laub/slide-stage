@@ -3,9 +3,10 @@ project:
   output-dir: docs
   render:
     - index.qmd
+    - bare.qmd
 
-format:
-  slide-stage-revealjs:
-    logo: unsw-logo.png
+# No theme layer here on purpose: the format extension is theme-neutral, so the
+# project default is the bare stage and index.qmd opts into the UNSW look.
+format: slide-stage-revealjs
 
 html-math-method: katex
