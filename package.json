@@ -2,7 +2,7 @@
   "name": "slide-stage-tests",
   "private": true,
   "scripts": {
-    "render": "quarto render example",
+    "render": "quarto render",
     "test": "playwright test",
     "test:headed": "playwright test --headed",
     "test:ui": "playwright test --ui",
