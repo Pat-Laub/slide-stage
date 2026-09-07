@@ -174,3 +174,31 @@ test('the slide menu button is not part of the stage furniture', async ({ page }
   await ready(page);
   await expect(page.locator('.slide-menu-button')).toHaveCount(0);
 });
+
+// The bug this rail was built to end: the F shortcut fullscreened the viewport
+// shell while a separate button elsewhere fullscreened Reveal's inset viewport,
+// a fixed-size element inside the stage's fit transform. Desktop browsers hid
+// the difference by sizing the fullscreen element to the screen; iOS Safari
+// laid it out at its authored 3744px on a black backdrop.
+async function fullscreenTarget(page, act) {
+  await page.evaluate(() => {
+    window.__fullscreened = [];
+    const record = function () { window.__fullscreened.push(this.className); };
+    Element.prototype.requestFullscreen = record;
+    Element.prototype.webkitRequestFullscreen = record;
+  });
+  await act();
+  return page.evaluate(() => window.__fullscreened);
+}
+
+test('the full-screen button and the F shortcut expand the same element', async ({ page }) => {
+  await page.goto(DECK);
+  await ready(page);
+
+  const byKey = await fullscreenTarget(page, () => page.keyboard.press('f'));
+  expect(byKey).toEqual(['deck-viewport-shell']);
+
+  const byButton = await fullscreenTarget(page, () =>
+    page.locator('.deck-launchers .deck-launcher-fullscreen').click());
+  expect(byButton).toEqual(byKey);
+});
