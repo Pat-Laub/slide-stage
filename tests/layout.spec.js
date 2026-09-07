@@ -164,3 +164,13 @@ test('the fit calculation rotates only for a narrow portrait viewport', async ({
     expect(fit.scale, name).toBeLessThan(1);
   }
 });
+
+// Quarto's reveal-menu is a `position: fixed` control sized for a browser page,
+// not for the authored canvas, so on the stage it lands in the wrong corner at a
+// fraction of the size of the buttons beside it. The stage turns it off rather
+// than keep compensating for it in SCSS.
+test('the slide menu button is not part of the stage furniture', async ({ page }) => {
+  await page.goto(DECK);
+  await ready(page);
+  await expect(page.locator('.slide-menu-button')).toHaveCount(0);
+});
