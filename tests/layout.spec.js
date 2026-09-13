@@ -202,3 +202,23 @@ test('the full-screen button and the F shortcut expand the same element', async 
     page.locator('.deck-launchers .deck-launcher-fullscreen').click());
   expect(byButton).toEqual(byKey);
 });
+
+// An iPad has no Esc and no O, so overview — the only way to move more than a
+// slide at a time — was out of reach with a finger. The corner rail is where
+// a touch already goes, and the button has to stay reachable inside overview
+// so the grid can be left without also changing slide.
+test('the overview button opens the grid and stays there to close it', async ({ page }) => {
+  await page.goto(DECK);
+  await ready(page);
+  const button = page.locator('.deck-launchers .deck-launcher-overview');
+
+  await button.click();
+  await expect(page.locator('.reveal.overview')).toBeVisible();
+  await expect(button).toBeVisible();
+  await expect(page.locator('.deck-launchers .deck-launcher-fullscreen')).toBeHidden();
+
+  const before = await page.evaluate(() => Reveal.getIndices().h);
+  await button.click();
+  await expect(page.locator('.reveal.overview')).toHaveCount(0);
+  expect(await page.evaluate(() => Reveal.getIndices().h)).toBe(before);
+});
