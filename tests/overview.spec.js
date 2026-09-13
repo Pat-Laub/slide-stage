@@ -63,6 +63,30 @@ test.describe('slide overview', () => {
     });
   }
 
+  // Every card is the authored page, 3138 x 1765 slide units, and a lecture
+  // deck puts 80 of them on the screen at once. Ringing them with a box-shadow
+  // costs a shadow buffer per card at that unscaled size, which is more than an
+  // iPad has: Safari's web process was killed 1.5-3.5s after overview opened on
+  // an 82-slide deck, reproducibly, and survived with nothing changed but these
+  // shadows. An `outline` draws the same ring for nothing. Measured over USB on
+  // an iPad Pro 12.9" (iPadOS 26.6.2); 60 cards survived, 82 did not.
+  test('overview cards are ringed without a box-shadow', async ({ page }) => {
+    await openOverview(page, { width: 1440, height: 900 });
+    const rings = await page.locator('.reveal.overview .slides section:not(.stack)').evaluateAll(slides =>
+      slides.slice(0, 3).map(slide => {
+        const card = getComputedStyle(slide, '::before');
+        return { id: slide.id, shadow: card.boxShadow, outline: card.outlineWidth, style: card.outlineStyle };
+      })
+    );
+
+    expect(rings.length).toBeGreaterThan(0);
+    for (const ring of rings) {
+      expect(ring.shadow, `${ring.id} rings its card with a box-shadow`).toBe('none');
+      expect(parseFloat(ring.outline), `${ring.id} has no ring at all`).toBeGreaterThan(0);
+      expect(ring.style, ring.id).toBe('solid');
+    }
+  });
+
   test('yellow artwork stays correctly proportioned and inside every preview', async ({ page }) => {
     await openOverview(page, { width: 1440, height: 900 });
     const geometry = await page.locator('.reveal.overview .slides section:not(.stack)').evaluateAll(slides =>
