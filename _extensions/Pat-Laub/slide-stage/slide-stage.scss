@@ -562,8 +562,13 @@ html.reveal-print {
 
 // Presentation controls, not content: keep them out of the printed deck and out
 // of the overview grid, where one row would sit over a whole grid of slides.
-.print-pdf .deck-launchers,
-.reveal.overview ~ .deck-launchers,
-.deck-stage-overview > .deck-launchers {
+.print-pdf .deck-launchers {
+  display: none !important;
+}
+
+// Overview covers the page with a grid of slides, so the row stands down there
+// -- all but the button that opened it, which is the way back out that does not
+// also change slide.
+.deck-stage-overview > .deck-launchers > .deck-launcher:not(.deck-launcher-overview) {
   display: none !important;
 }
