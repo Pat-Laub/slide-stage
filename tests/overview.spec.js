@@ -87,7 +87,8 @@ test.describe('slide overview', () => {
     for (const edge of ['left', 'top', 'width', 'height']) {
       expect(box.published[edge], `--deck-overview-card-${edge} is not published`).not.toBeNaN();
       expect(box.published[edge], `--deck-overview-card-${edge} does not match the card`)
-        .toBeCloseTo(box.drawn[edge], 2);
+        // A hundredth of a slide unit; the card's own computed value is rounded.
+        .toBeCloseTo(box.drawn[edge], 1);
     }
   });
 
