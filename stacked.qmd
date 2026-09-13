@@ -1,0 +1,33 @@
+---
+title: "Stacked Stage"
+---
+
+# Vertical navigation is a stack {#stacks-one}
+
+A level-one heading opens a stack; the level-two slides beneath it become its
+vertical children. The overview grid is the only place the stage has to lay
+those out in two directions at once, so this deck exists to be measured there.
+
+## Inside the first stack {#stack-one-top}
+
+The top of the stack. Overview puts this card in the first row of its column.
+
+## Still in the first stack {#stack-one-middle}
+
+The second card of the column, one vertical pitch below the one above it.
+
+## The end of the first stack {#stack-one-bottom}
+
+The third and last card of the column.
+
+# A second stack {#stacks-two}
+
+Two stacks side by side give the grid both a row and a column to measure.
+
+## Inside the second stack {#stack-two-top}
+
+The top of the second column.
+
+## Still in the second stack {#stack-two-middle}
+
+The second card of the second column.
