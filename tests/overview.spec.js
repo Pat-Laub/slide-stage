@@ -9,9 +9,9 @@ function slideUnit() {
   return (stage.width / 3744) * slides.a;
 }
 
-async function openOverview(page, viewport) {
+async function openOverview(page, viewport, deck = '/docs/index.slides.html') {
   await page.setViewportSize(viewport);
-  await page.goto('/docs/index.slides.html');
+  await page.goto(deck);
   await page.waitForFunction(() => window.Reveal && Reveal.isReady());
   await page.evaluate(() => Reveal.toggleOverview(true));
   await page.waitForFunction(() => Reveal.isOverview() &&
@@ -62,6 +62,54 @@ test.describe('slide overview', () => {
       }
     });
   }
+
+  // Reveal lays the overview grid on a pitch of its own slide size plus 70,
+  // and its slide size is the inset content frame, not the card a preview
+  // actually draws: the card is the whole authored page, 16:9, so it eats the
+  // horizontal gutter and leaves the vertical one alone. The gutter is the
+  // reader's only cue that two previews are two slides, so it has to survive
+  // on both axes. Measured on a deck with stacks, the only layout that puts
+  // cards next to one another in both directions.
+  test('cards keep an even gutter on both axes', async ({ page }) => {
+    await openOverview(page, { width: 1440, height: 900 }, '/docs/stacked.slides.html');
+    const cards = await page.locator('.reveal.overview .slides section:not(.stack)').evaluateAll(slides =>
+      slides.filter(slide => slide.getBoundingClientRect().width > 0).map(slide => {
+        const section = slide.getBoundingClientRect();
+        const card = getComputedStyle(slide, '::before');
+        const scale = slideUnit();
+        return {
+          id: slide.id,
+          left: section.left + parseFloat(card.left) * scale,
+          top: section.top + parseFloat(card.top) * scale,
+          width: parseFloat(card.width) * scale,
+          height: parseFloat(card.height) * scale
+        };
+      })
+    );
+
+    // Neighbours in a row share a top edge; neighbours in a column share a left.
+    const gutters = (along, across, size) => {
+      const gaps = [];
+      for (const a of cards) for (const b of cards) {
+        if (Math.abs(a[across] - b[across]) > 1) continue;
+        const gap = b[along] - (a[along] + a[size]);
+        if (gap > -1) gaps.push(gap);
+      }
+      return gaps.length ? Math.min(...gaps) : null;
+    };
+    const horizontal = gutters('left', 'top', 'width');
+    const vertical = gutters('top', 'left', 'height');
+
+    expect(horizontal, 'no two cards share a row').not.toBeNull();
+    expect(vertical, 'no two cards share a column').not.toBeNull();
+    // A gutter thinner than this reads as two slides touching, which is the
+    // bug: at 1440 wide a card is ~230px, so this is a visible few pixels.
+    const card = cards[0];
+    expect(horizontal / card.width, 'the horizontal gutter has been eaten up').toBeGreaterThan(0.02);
+    expect(vertical / card.height, 'the vertical gutter has been eaten up').toBeGreaterThan(0.02);
+    // And the two have to be the same gutter, not merely both present.
+    expect(horizontal, 'the gutters are uneven').toBeCloseTo(vertical, 0);
+  });
 
   // An overlay an extension lays over a slide -- annotate's ink previews are the
   // case this exists for -- is drawn in the coordinates of the authored page,
