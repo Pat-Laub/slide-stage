@@ -187,7 +187,7 @@ $ov-card-height: 1765.125px;   // exactly 16:9, i.e. the page scaled by $ov-scal
 // its slide size plus a hard-coded 70, and its slide size is the content
 // frame, not the card: a 16:9 card as wide as that pitch allows leaves 4 slide
 // units beside it and 150 below it, so the grid reads as a row of touching
-// slides. deck-stage-open.html sets the pitch from this instead. 150 is the
+// slides. reveal-fixes.html sets the pitch from this instead. 150 is the
 // gutter reveal's own arithmetic happened to leave vertically, now on both.
 $ov-gap: 150px;
 
