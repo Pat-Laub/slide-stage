@@ -63,6 +63,34 @@ test.describe('slide overview', () => {
     });
   }
 
+  // An overlay an extension lays over a slide -- annotate's ink previews are the
+  // case this exists for -- is drawn in the coordinates of the authored page,
+  // not of the content frame the section actually is. Overview maps the page
+  // onto the card, so the card's box is published for the overlay to sit on.
+  // Read from the stage, in slide units, exactly as the ::before card is drawn.
+  test('the overview card box is published for overlays to use', async ({ page }) => {
+    await openOverview(page, { width: 1440, height: 900 });
+    const box = await page.evaluate(() => {
+      const stage = getComputedStyle(document.querySelector('[data-deck-stage]'));
+      const slide = [...document.querySelectorAll('.reveal.overview .slides section:not(.stack)')]
+        .find(s => s.getBoundingClientRect().width > 0);
+      const card = getComputedStyle(slide, '::before');
+      const read = name => parseFloat(stage.getPropertyValue(name));
+      return {
+        published: { left: read('--deck-overview-card-left'), top: read('--deck-overview-card-top'),
+                     width: read('--deck-overview-card-width'), height: read('--deck-overview-card-height') },
+        drawn: { left: parseFloat(card.left), top: parseFloat(card.top),
+                 width: parseFloat(card.width), height: parseFloat(card.height) }
+      };
+    });
+
+    for (const edge of ['left', 'top', 'width', 'height']) {
+      expect(box.published[edge], `--deck-overview-card-${edge} is not published`).not.toBeNaN();
+      expect(box.published[edge], `--deck-overview-card-${edge} does not match the card`)
+        .toBeCloseTo(box.drawn[edge], 2);
+    }
+  });
+
   // Every card is the authored page, 3138 x 1765 slide units, and a lecture
   // deck puts 80 of them on the screen at once. Ringing them with a box-shadow
   // costs a shadow buffer per card at that unscaled size, which is more than an
