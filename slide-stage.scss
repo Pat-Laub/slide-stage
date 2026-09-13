@@ -190,6 +190,17 @@ $ov-card-height: 1765.125px;   // exactly 16:9, i.e. the page scaled by $ov-scal
 // overview gives us, so its offsets are the page's own insets scaled down.
 $ov-card-left: -$content-left * $ov-scale;
 $ov-card-top: -$content-top * $ov-scale;
+
+// The card is where the authored page goes while overview is open, so anything
+// drawn in page coordinates over a slide -- annotate's ink previews -- has to
+// be told about it: a section is the content frame, which is a different box.
+// Published on the stage next to --deck-width, in slide units.
+.deck-stage {
+  --deck-overview-card-left: #{$ov-card-left};
+  --deck-overview-card-top: #{$ov-card-top};
+  --deck-overview-card-width: #{$ov-card-width};
+  --deck-overview-card-height: #{$ov-card-height};
+}
 $ov-rail: $rail-width * $ov-scale;
 $ov-rail-left: ($deck-width - $content-left - $rail-width) * $ov-scale;
 $ov-content-width: $content-width * $ov-scale;
