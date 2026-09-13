@@ -175,16 +175,21 @@ body.quarto-light {
 }
 
 // Each overview cell shows the whole page, not just Reveal's inner content.
-// Reveal lays the grid out on a hard-coded pitch of content + 70, and that 70
-// is a constant in slide units -- it does not grow with the authored canvas --
-// so a card at the real 3744 would cover its neighbour. The card is therefore
-// the page scaled by 3138/3744, and the content inside it is scaled by that
-// same factor: shrinking only the furniture would leave the content overflowing
-// the card, which crops the heading off the top of every preview. Live and PDF
-// geometry are untouched; this is a navigation thumbnail.
+// The card is the page scaled by 3138/3744, and the content inside it is
+// scaled by that same factor: shrinking only the furniture would leave the
+// content overflowing the card, which crops the heading off the top of every
+// preview. Live and PDF geometry are untouched; this is a navigation thumbnail.
 $ov-scale: 0.83814102564;      // 3138 / 3744
-$ov-card-width: 3138px;        // the widest that clears the pitch of 3142
+$ov-card-width: 3138px;
 $ov-card-height: 1765.125px;   // exactly 16:9, i.e. the page scaled by $ov-scale
+
+// The gap between one card and the next, on both axes. Reveal's own pitch is
+// its slide size plus a hard-coded 70, and its slide size is the content
+// frame, not the card: a 16:9 card as wide as that pitch allows leaves 4 slide
+// units beside it and 150 below it, so the grid reads as a row of touching
+// slides. deck-stage-open.html sets the pitch from this instead. 150 is the
+// gutter reveal's own arithmetic happened to leave vertically, now on both.
+$ov-gap: 150px;
 
 // The card is hung off the content frame's top-left corner, the only anchor
 // overview gives us, so its offsets are the page's own insets scaled down.
@@ -200,6 +205,7 @@ $ov-card-top: -$content-top * $ov-scale;
   --deck-overview-card-top: #{$ov-card-top};
   --deck-overview-card-width: #{$ov-card-width};
   --deck-overview-card-height: #{$ov-card-height};
+  --deck-overview-card-gap: #{$ov-gap};
 }
 $ov-rail: $rail-width * $ov-scale;
 $ov-rail-left: ($deck-width - $content-left - $rail-width) * $ov-scale;
