@@ -516,29 +516,43 @@ html.reveal-print {
   text-align: center !important;
 }
 
-/* Ordered markers have the same WebKit baseline problem as bullets when the
-   first child of an item is a tall display equation: the native marker is
-   vertically centred against the item's line box.  Paint the marker in the
-   item's coordinate system instead, so `a.`, `b.`, etc. stay at the top of
-   every answer regardless of the equation's height.  `counter(list-item)`
+/* Ordered markers get the same treatment as the bullets above, for two
+   reasons.  Reveal's 1em left margin is outside the list's own box, so a native
+   outside marker is painted beyond it: on a list flush with the frame's left
+   edge the clipped `.slides` box slices the markers in half, and a serif `b.`
+   renders as `).`.  WebKit also centres the native marker against the item's
+   line box, which drops `a.`, `b.` to the middle of an answer whose first child
+   is a tall display equation.  Trading the margin for equal padding keeps the
+   text where it was and brings the marker inside the box.  `counter(list-item)`
    honours the HTML `start`/`type` attributes emitted by Quarto. */
-.reveal .slide ol:has(.math.display),
-.reveal .slide ol:has(.katex-display) {
+.reveal .slide ol {
   list-style: none;
+  margin-left: 0;
+  padding-left: 1em;
 }
-.reveal .slide ol:has(.math.display) > li,
-.reveal .slide ol:has(.katex-display) > li {
+.reveal .slide ol > li {
   position: relative;
 }
-.reveal .slide ol:has(.math.display) > li::before,
-.reveal .slide ol:has(.katex-display) > li::before {
-  content: counter(list-item, lower-alpha) ".";
+.reveal .slide ol > li::before {
+  content: counter(list-item, decimal) ".";
   position: absolute;
   top: 0;
   left: -1em;
   width: 1em;
   text-align: left;
   color: var(--r-main-color);
+}
+.reveal .slide ol[type="a"] > li::before {
+  content: counter(list-item, lower-alpha) ".";
+}
+.reveal .slide ol[type="A"] > li::before {
+  content: counter(list-item, upper-alpha) ".";
+}
+.reveal .slide ol[type="i"] > li::before {
+  content: counter(list-item, lower-roman) ".";
+}
+.reveal .slide ol[type="I"] > li::before {
+  content: counter(list-item, upper-roman) ".";
 }
 
 // The progress bar along the bottom is a *button* as well as a gauge: reveal
