@@ -222,3 +222,35 @@ test('the overview button opens the grid and stays there to close it', async ({ 
   await expect(page.locator('.reveal.overview')).toHaveCount(0);
   expect(await page.evaluate(() => Reveal.getIndices().h)).toBe(before);
 });
+
+// `.slides` is clipped, and reveal gives lists a 1em left margin with nothing
+// reserved inside the box: a native outside `::marker` is painted to the left
+// of the list's own border edge, so a list that starts at the frame's left edge
+// has its numbers sliced in half -- `b.` renders as `).`. Assert every ordered
+// list reserves room for its marker inside its own box, where the clip cannot
+// reach it.
+test('ordered-list markers are painted inside the list box', async ({ browser }) => {
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await context.newPage();
+  await page.goto(DECK + '#/numbered-steps');
+  await ready(page);
+
+  const gutters = await page.evaluate(() => {
+    const slide = document.querySelector('.reveal .slides section.present');
+    return Array.from(slide.querySelectorAll('ol > li')).map(li => {
+      const probe = document.createElement('span');
+      probe.style.cssText = 'position:absolute;visibility:hidden;white-space:pre';
+      probe.style.font = getComputedStyle(li).font;
+      probe.textContent = (li.parentElement.type === 'a' ? 'b' : '4') + '.';
+      li.appendChild(probe);
+      const marker = probe.getBoundingClientRect().width;
+      probe.remove();
+      const ol = li.parentElement.getBoundingClientRect();
+      return li.getBoundingClientRect().left - ol.left - marker;
+    });
+  });
+
+  expect(gutters.length).toBeGreaterThan(0);
+  expect(Math.min(...gutters)).toBeGreaterThanOrEqual(0);
+  await context.close();
+});
