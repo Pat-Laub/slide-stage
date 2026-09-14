@@ -254,3 +254,38 @@ test('ordered-list markers are painted inside the list box', async ({ browser })
   expect(Math.min(...gutters)).toBeGreaterThanOrEqual(0);
   await context.close();
 });
+
+// Attribute values are matched case-insensitively in HTML, so a marker rule
+// keyed on `[type="A"]` silently also claims Quarto's `type="a"` lists; the `s`
+// flag that would fix that is dropped whole by Chrome, which is worse again --
+// `b.` becomes `2.`. Assert what every engine actually applies to a lettered
+// list: the decimal base rule, then exactly one lower-alpha override.
+test('lettered list markers are lettered and lower-case in every engine', async ({ browser }) => {
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await context.newPage();
+  await page.goto(DECK + '#/lettered-parts');
+  await ready(page);
+
+  // Computed style serialises the counter without its style argument, so ask
+  // the CSSOM which marker declarations actually claim this list.
+  const claimed = await page.evaluate(() => {
+    const ol = document.querySelector('.reveal .slides section.present ol[type="a"]');
+    const styles = [];
+    for (const sheet of document.styleSheets) {
+      let rules;
+      try { rules = sheet.cssRules; } catch { continue; }
+      for (const rule of rules) {
+        if (!rule.selectorText || !/li::before/.test(rule.selectorText)) continue;
+        if (!/counter\(list-item/.test(rule.style.content || '')) continue;
+        if (!ol.matches(rule.selectorText.replace(/\s*>\s*li::before/g, ''))) continue;
+        // Browsers drop the style argument when it is the serialised default.
+        const style = rule.style.content.match(/counter\(list-item,\s*([\w-]+)/);
+        styles.push(style ? style[1] : 'decimal');
+      }
+    }
+    return styles;
+  });
+
+  expect(claimed).toEqual(['decimal', 'lower-alpha']);
+  await context.close();
+});

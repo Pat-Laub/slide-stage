@@ -542,17 +542,17 @@ html.reveal-print {
   text-align: left;
   color: var(--r-main-color);
 }
+/* Attribute values are matched case-insensitively in HTML, so `[type="A"]`
+   would also claim Quarto's `type="a"` lists and turn `b.` into `B.`.  The `s`
+   flag that would fix that is still unimplemented in Chrome, which drops the
+   whole rule -- markers then silently fall back to `2.`, `3.`.  Lower-case
+   alphabetical and roman lists are therefore the ones we can key on; an
+   upper-case list renders lower-case. */
 .reveal .slide ol[type="a"] > li::before {
   content: counter(list-item, lower-alpha) ".";
 }
-.reveal .slide ol[type="A"] > li::before {
-  content: counter(list-item, upper-alpha) ".";
-}
 .reveal .slide ol[type="i"] > li::before {
   content: counter(list-item, lower-roman) ".";
-}
-.reveal .slide ol[type="I"] > li::before {
-  content: counter(list-item, upper-roman) ".";
 }
 
 // The progress bar along the bottom is a *button* as well as a gauge: reveal

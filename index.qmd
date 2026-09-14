@@ -150,6 +150,12 @@ whole page.
 3. Apply one uniform transform
 4. Never scale anything else
 
+## Lettered parts {#lettered-parts}
+
+a. A question with parts
+b. Its second part
+c. Its third part
+
 ## Small print {#small-print}
 
 ::: {.small}
