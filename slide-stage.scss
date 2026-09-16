@@ -400,19 +400,22 @@ html.reveal-print {
   bottom: auto !important;
 }
 
-// Reveal's navigation and progress elements are viewport-sized siblings of the
-// slide, so explicitly pull their active edges back to the slide rectangle.
-.reveal .controls .navigate-left {
-  left: 30px !important;
+// Reveal already clusters the arrows in the bottom-right corner; pinning each
+// one to its own edge of the stage left them a screen apart and, at reveal's
+// 10px default, 36 slide units across -- a fifth of a launcher, and far too
+// small to hit with a finger mid-lecture. Keep reveal's arrangement and size it
+// instead: every part of the arrow is drawn in `em` off a 3.6em box, so the
+// font size is the only lever, and matching `$launcher-size` puts the arrows on
+// the same footing as the launcher row in the opposite corner.
+.reveal .controls {
+  font-size: calc(#{$launcher-size} / 3.6) !important;
 }
+
+// The corner itself belongs to the logo, which stands $rail-width * 0.8 tall
+// off the bottom edge, so seat the cluster above it rather than on top of it.
+.reveal .controls .navigate-left,
 .reveal .controls .navigate-right {
-  right: 6px !important;
-}
-.reveal .controls .navigate-up {
-  top: 12px !important;
-}
-.reveal .controls .navigate-down {
-  bottom: 69px !important;
+  bottom: #{($rail-width * 0.8) + 24px} !important;
 }
 
 #title-slide {
