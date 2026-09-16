@@ -408,14 +408,26 @@ html.reveal-print {
 // font size is the only lever, and matching `$launcher-size` puts the arrows on
 // the same footing as the launcher row in the opposite corner.
 .reveal .controls {
-  font-size: calc(#{$launcher-size} / 3.6) !important;
+  // Every part of reveal's arrow is drawn in `em` off a 3.6em box, so the font
+  // size is the only lever on it. Match $launcher-icon rather than the larger
+  // $launcher-size box the launchers are tapped through: it is the mark on the
+  // screen that has to look the same weight, not the target behind it.
+  font-size: calc(#{$launcher-icon} / 3.6) !important;
 }
 
-// The corner itself belongs to the logo, which stands $rail-width * 0.8 tall
-// off the bottom edge, so seat the cluster above it rather than on top of it.
+// The arrows finish the bottom row the launchers start, and stop a gap short
+// of the rail so they never sit on it or on the logo standing in it.
 .reveal .controls .navigate-left,
 .reveal .controls .navigate-right {
-  bottom: #{($rail-width * 0.8) + 24px} !important;
+  top: auto !important;
+  bottom: calc(24px + (#{$launcher-size} - #{$launcher-icon}) / 2) !important;
+  left: auto !important;
+}
+.reveal .controls .navigate-right {
+  right: #{$rail-width + 24px} !important;
+}
+.reveal .controls .navigate-left {
+  right: #{$rail-width + 24px + $launcher-icon} !important;
 }
 
 #title-slide {
