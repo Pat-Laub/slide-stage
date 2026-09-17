@@ -25,7 +25,7 @@ import uuid
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-BASE = "http://127.0.0.1:4173"
+BASE = "http://127.0.0.1:4175"
 DECK = "/docs/index.slides.html"
 SLIDE = "#/wide-prose"
 DEVICE_NAME = "slide-stage-iPad"
