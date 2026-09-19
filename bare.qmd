@@ -11,3 +11,12 @@ and `none`.
 
 The geometry, however, has to come out identical to a themed deck, which is
 what the accompanying test asserts.
+
+## A slide footer {#bare-footer}
+
+A parenthetical note or a reference belongs along the bottom of the slide, in
+type small enough to stay out of the way and large enough to read.
+
+::: footer
+Source: a reference given in passing, not part of the argument.
+:::
