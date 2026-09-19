@@ -154,11 +154,6 @@ body.quarto-light {
     bottom: -#{$content-bottom} !important;
     width: #{$deck-width} !important;
   }
-  div.footer {
-    position: absolute !important;
-    left: -#{$content-left} !important;
-    width: #{$deck-width} !important;
-  }
   &.has-logo .slide-number {
     position: absolute !important;
     top: -#{$content-top} !important;
@@ -486,7 +481,7 @@ html.reveal-print {
 // Quarto's live footer clone is viewport-fixed, which would otherwise span the
 // whole overview. In overview, hide that clone and reveal each slide's own
 // source footer inside its 16:9 preview cell instead.
-.reveal.overview > .footer.footnote-footer {
+.reveal.overview > .footer {
   display: none !important;
 }
 
@@ -503,6 +498,21 @@ html.reveal-print {
 .reveal.overview .slides section:not(.stack) > .footer.footnote-footer::before {
   width: 840px;
   margin-bottom: 12px;
+}
+
+// The same swap for a plain footer, which is centred on the card rather than
+// ranged left under a rule. `bottom` is measured from the section, whose lower
+// edge is well below the card's, so the inset is the gap between the two plus
+// the live footer's own inset scaled down -- 24px here would hang the text
+// underneath the card.
+.reveal.overview .slides section:not(.stack) > .footer {
+  display: block !important;
+  position: absolute;
+  left: #{$ov-card-left};
+  bottom: #{$content-height - ($ov-card-top + $ov-card-height) + 54px * $ov-scale};
+  width: #{$ov-card-width};
+  text-align: center;
+  font-size: #{54px * $ov-scale};
 }
 
 // Keep unordered-list bullets inside the same transformed box as their text.
