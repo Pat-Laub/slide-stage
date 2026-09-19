@@ -441,6 +441,16 @@ html.reveal-print {
   text-align: center;
 }
 
+// Quarto's footer CSS is written in browser pixels for a deck a third of this
+// one's size, so an unstyled `::: footer` lands at a third of the intended
+// size and hugs the bottom edge. Both values are that CSS scaled to the
+// authored canvas; the element selector is what outweighs a rule of equal
+// specificity that Quarto loads after this stylesheet.
+.reveal div.footer {
+  bottom: 54px;
+  font-size: 54px;
+}
+
 // A semantic slide footnote is page chrome, like Beamer's footnote area, not
 // part of the normal-flow content. Quarto clones this footer outside `.slide`
 // in live view; the source copy remains hidden by Quarto's support stylesheet.
