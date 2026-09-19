@@ -152,21 +152,31 @@ test('a slide footer sits inside its own card in overview', async ({ page }) => 
     const footer = [...section.querySelectorAll(':scope > .footer')]
       .find(el => getComputedStyle(el).display !== 'none');
     if (!footer) return { visibleClones: clones.length, footer: null };
+    // Measure where the text lands, in page pixels. Comparing the footer's own
+    // CSS box against the card's proves nothing: a card's children are zoomed,
+    // so equal declared values are not equal painted ones.
     const card = getComputedStyle(section, '::before');
     const px = v => parseFloat(v);
-    const style = getComputedStyle(footer);
+    const secBox = section.getBoundingClientRect();
+    const scale = secBox.width / px(getComputedStyle(section).width);
+    const range = document.createRange();
+    range.selectNodeContents(footer);
+    const text = range.getBoundingClientRect();
     return {
       visibleClones: clones.length,
-      cardBottom: px(card.top) + px(card.height),
-      cardCentre: px(card.left) + px(card.width) / 2,
-      footerBottom: px(getComputedStyle(section).height) - px(style.bottom),
-      footerCentre: px(style.left) + px(style.width) / 2
+      textCentre: (text.left + text.right) / 2,
+      textBottom: text.bottom,
+      cardCentre: secBox.left + (px(card.left) + px(card.width) / 2) * scale,
+      cardBottom: secBox.top + (px(card.top) + px(card.height)) * scale,
+      cardWidth: px(card.width) * scale
     };
   });
 
   expect(geometry.visibleClones).toBe(0);
-  expect(geometry.footerCentre).toBeCloseTo(geometry.cardCentre, 0);
+  // Within a thousandth of the card's width of its centre line.
+  expect(Math.abs(geometry.textCentre - geometry.cardCentre))
+    .toBeLessThan(geometry.cardWidth / 1000);
   // Inside the card, not hanging below it.
-  expect(geometry.footerBottom).toBeLessThan(geometry.cardBottom);
-  expect(geometry.cardBottom - geometry.footerBottom).toBeLessThan(150);
+  expect(geometry.textBottom).toBeLessThan(geometry.cardBottom);
+  expect(geometry.cardBottom - geometry.textBottom).toBeLessThan(geometry.cardWidth / 20);
 });
