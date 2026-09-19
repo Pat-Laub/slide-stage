@@ -135,3 +135,38 @@ test('a slide footer is legible on the authored canvas', async ({ page }) => {
   expect(footer.left).toBeGreaterThanOrEqual(stage.left - 1);
   expect(footer.right).toBeLessThanOrEqual(stage.right + 1);
 });
+
+// Quarto's footer is a viewport-fixed clone, which in overview would float
+// over the whole grid instead of belonging to a card.
+test('a slide footer sits inside its own card in overview', async ({ page }) => {
+  await page.goto(BARE + '#/bare-footer');
+  await page.waitForFunction(() => window.Reveal && Reveal.isReady());
+  await page.evaluate(() => Reveal.toggleOverview(true));
+  await page.waitForFunction(() => document.querySelector('.reveal.overview'));
+  await page.waitForTimeout(500);
+
+  const geometry = await page.evaluate(() => {
+    const clones = [...document.querySelectorAll('.reveal > .footer')]
+      .filter(el => el.textContent.trim() && getComputedStyle(el).display !== 'none');
+    const section = document.querySelector('.reveal .slides section:not(.stack).present');
+    const footer = [...section.querySelectorAll(':scope > .footer')]
+      .find(el => getComputedStyle(el).display !== 'none');
+    if (!footer) return { visibleClones: clones.length, footer: null };
+    const card = getComputedStyle(section, '::before');
+    const px = v => parseFloat(v);
+    const style = getComputedStyle(footer);
+    return {
+      visibleClones: clones.length,
+      cardBottom: px(card.top) + px(card.height),
+      cardCentre: px(card.left) + px(card.width) / 2,
+      footerBottom: px(getComputedStyle(section).height) - px(style.bottom),
+      footerCentre: px(style.left) + px(style.width) / 2
+    };
+  });
+
+  expect(geometry.visibleClones).toBe(0);
+  expect(geometry.footerCentre).toBeCloseTo(geometry.cardCentre, 0);
+  // Inside the card, not hanging below it.
+  expect(geometry.footerBottom).toBeLessThan(geometry.cardBottom);
+  expect(geometry.cardBottom - geometry.footerBottom).toBeLessThan(150);
+});
