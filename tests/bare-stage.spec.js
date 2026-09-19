@@ -105,3 +105,22 @@ test('overriding the authored size moves the box and the transform together', as
   expect(Math.max(box.width / 1440, box.height / 900)).toBeCloseTo(1, 2);
   await context.close();
 });
+
+// Quarto's own footer CSS is absolute pixels chosen for a deck a third of this
+// one's size, so an unstyled footer reads as a third of the intended type.
+test('a slide footer is legible on the authored canvas', async ({ page }) => {
+  await page.goto(BARE + '#/bare-footer');
+  await page.waitForFunction(() => window.Reveal && Reveal.isReady());
+
+  // Quarto clones the slide's footer into `.reveal` alongside an empty default.
+  const fontSize = await page.evaluate(() => {
+    const footer = [...document.querySelectorAll('.reveal > .footer')]
+      .find(el => el.textContent.trim() && getComputedStyle(el).display !== 'none');
+    return footer ? parseFloat(getComputedStyle(footer).fontSize) : null;
+  });
+  expect(fontSize).not.toBeNull();
+  const rootFontSize = await page.evaluate(
+    () => parseFloat(getComputedStyle(document.querySelector('.reveal')).fontSize)
+  );
+  expect(fontSize / rootFontSize).toBeCloseTo(18 / 28, 2);
+});
