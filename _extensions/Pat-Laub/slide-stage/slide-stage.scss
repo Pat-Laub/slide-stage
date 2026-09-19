@@ -154,6 +154,11 @@ body.quarto-light {
     bottom: -#{$content-bottom} !important;
     width: #{$deck-width} !important;
   }
+  div.footer {
+    position: absolute !important;
+    left: -#{$content-left} !important;
+    width: #{$deck-width} !important;
+  }
   &.has-logo .slide-number {
     position: absolute !important;
     top: -#{$content-top} !important;
@@ -446,8 +451,16 @@ html.reveal-print {
 // size and hugs the bottom edge. Both values are that CSS scaled to the
 // authored canvas; the element selector is what outweighs a rule of equal
 // specificity that Quarto loads after this stylesheet.
+//
+// Quarto centres the footer with `width: 100%` and no `left`, so like the
+// progress bar it needs anchoring: the percentage resolves against the stage
+// while the absent `left` falls back to a static position inside the inset
+// content frame, which pushes the text right by that inset and hangs the same
+// amount off the other edge.
 .reveal div.footer {
+  left: 0;
   bottom: 54px;
+  width: #{$deck-width};
   font-size: 54px;
 }
 
