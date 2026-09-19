@@ -1,6 +1,6 @@
 title: Slide stage
 author: Patrick Laub
-version: 0.7.10
+version: 0.7.11
 quarto-required: ">=1.4.0"
 contributes:
   formats:
