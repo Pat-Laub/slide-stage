@@ -123,4 +123,15 @@ test('a slide footer is legible on the authored canvas', async ({ page }) => {
     () => parseFloat(getComputedStyle(document.querySelector('.reveal')).fontSize)
   );
   expect(fontSize / rootFontSize).toBeCloseTo(18 / 28, 2);
+
+  // Centred on the whole page, not on the inset frame Reveal itself occupies.
+  const { footer, stage } = await page.evaluate(() => {
+    const box = el => { const r = el.getBoundingClientRect(); return { left: r.left, right: r.right }; };
+    const el = [...document.querySelectorAll('.reveal > .footer')]
+      .find(e => e.textContent.trim() && getComputedStyle(e).display !== 'none');
+    return { footer: box(el), stage: box(document.querySelector('[data-deck-stage]')) };
+  });
+  expect((footer.left + footer.right) / 2).toBeCloseTo((stage.left + stage.right) / 2, 0);
+  expect(footer.left).toBeGreaterThanOrEqual(stage.left - 1);
+  expect(footer.right).toBeLessThanOrEqual(stage.right + 1);
 });
