@@ -235,6 +235,92 @@ window.selectedAnnoteEl = null;
 })();
 </script>
 <script>
+// Placeholders for the slides the touch overview does not load.
+//
+// The gate above leaves reveal's lazy loading alone on a touch device, which
+// keeps the grid inside the memory the web process is allowed -- it was being
+// killed at 5.4 GB -- but it also leaves a gap wherever a slide is unloaded.
+//
+// The obvious repair is to show the slide's own section with its contents
+// hidden. That was measured on an iPad and it is not cheap: the section
+// carries the whole authored subtree, and making it visible again drags all of
+// it back into style and layout, which killed the process on the first open
+// exactly as eager loading did. A placeholder that is its own small element
+// and never touches the section survived the same test indefinitely.
+//
+// Position is copied from the section rather than recomputed: reveal lays out
+// every cell in the grid whether or not it loaded the slide, so the transform
+// is already sitting on the element, correct and free.
+(function () {
+  var LAYER = 'deck-overview-ghosts';
+
+  function cards() {
+    var reveal = document.querySelector('.reveal');
+    if (!reveal) return null;
+    var style = getComputedStyle(reveal);
+    var width = parseFloat(style.getPropertyValue('--deck-overview-card-width'));
+    var height = parseFloat(style.getPropertyValue('--deck-overview-card-height'));
+    return width && height ? { width: width, height: height } : null;
+  }
+
+  function title(section) {
+    var heading = section.querySelector('h1, h2, h3');
+    return heading ? (heading.textContent || '').replace(/\s+/g, ' ').trim() : '';
+  }
+
+  function clear() {
+    var layer = document.querySelector('.' + LAYER);
+    if (layer) layer.remove();
+  }
+
+  function draw() {
+    clear();
+    if (!Reveal.isOverview()) return;
+    var slides = document.querySelector('.reveal .slides');
+    var card = cards();
+    if (!slides || !card) return;
+
+    var layer = document.createElement('div');
+    layer.className = LAYER;
+
+    [].forEach.call(slides.querySelectorAll('section:not(.stack)'), function (section) {
+      // reveal's own bookkeeping: unloading a slide is this and nothing else.
+      if (section.style.display !== 'none') return;
+      var ghost = document.createElement('button');
+      ghost.type = 'button';
+      ghost.className = 'deck-overview-ghost';
+      ghost.textContent = title(section);
+      ghost.style.width = card.width + 'px';
+      ghost.style.height = card.height + 'px';
+      ghost.style.top = section.style.top || '0px';
+      ghost.style.transform = section.style.transform || 'none';
+      ghost.addEventListener('click', function () {
+        var at = Reveal.getIndices(section);
+        Reveal.slide(at.h, at.v || 0);   // a slide outside a stack has no v
+      });
+      layer.appendChild(ghost);
+    });
+
+    if (layer.children.length) slides.appendChild(layer);
+  }
+
+  function attach() {
+    if (!window.Reveal || !Reveal.on) return false;
+    if (!matchMedia('(any-pointer: coarse)').matches) return true;
+    Reveal.on('overviewshown', draw);
+    Reveal.on('overviewhidden', clear);
+    // Moving inside the grid reloads one neighbourhood and unloads another.
+    Reveal.on('slidechanged', draw);
+    return true;
+  }
+
+  if (!attach()) {
+    var iv = setInterval(function () { if (attach()) clearInterval(iv); }, 50);
+    setTimeout(function () { clearInterval(iv); }, 10000);
+  }
+})();
+</script>
+<script>
 // Arrow-key panning of the reveal.js zoom plugin.
 //
 // The zoom plugin (Alt/Option-click to magnify) is all-or-nothing: land on
