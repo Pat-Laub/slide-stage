@@ -299,12 +299,6 @@ $ov-content-width: $content-width * $ov-scale;
 // loaded. Sized and placed from the card geometry published above, so they sit
 // on the grid with the real previews; styled to match the card and its rail so
 // the grid reads as one map with some of it summarised.
-.deck-overview-ghosts {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
 .deck-overview-ghost {
   position: absolute;
   left: 0;
@@ -316,7 +310,10 @@ $ov-content-width: $content-width * $ov-scale;
   background: $body-bg;
   color: rgba($mainColor, 0.65);
   font-family: inherit;
-  font-size: #{$presentation-h1-font-size * $presentation-font-size-root * $ov-scale};
+  // A heading's size in card space. Written as a plain multiple of the root
+  // rather than $presentation-h1-font-size, which carries `em` and would
+  // compound against the inherited size instead of measuring the card.
+  font-size: #{$presentation-font-size-root * 1.6 * $ov-scale};
   line-height: 1.15;
   text-align: left;
   overflow: hidden;

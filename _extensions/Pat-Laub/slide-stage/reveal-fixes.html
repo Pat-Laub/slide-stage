@@ -250,9 +250,12 @@ window.selectedAnnoteEl = null;
 //
 // Position is copied from the section rather than recomputed: reveal lays out
 // every cell in the grid whether or not it loaded the slide, so the transform
-// is already sitting on the element, correct and free.
+// is already sitting on the element, correct and free. The placeholder goes in
+// the section's own parent to read it, because a slide inside a stack carries
+// only its vertical offset -- the column is on the stack -- and one hung off
+// `.slides` instead lands in the first column whatever stack it belongs to.
 (function () {
-  var LAYER = 'deck-overview-ghosts';
+  var GHOST = 'deck-overview-ghost';
 
   function cards() {
     var reveal = document.querySelector('.reveal');
@@ -269,8 +272,7 @@ window.selectedAnnoteEl = null;
   }
 
   function clear() {
-    var layer = document.querySelector('.' + LAYER);
-    if (layer) layer.remove();
+    [].forEach.call(document.querySelectorAll('.' + GHOST), function (ghost) { ghost.remove(); });
   }
 
   function draw() {
@@ -280,15 +282,13 @@ window.selectedAnnoteEl = null;
     var card = cards();
     if (!slides || !card) return;
 
-    var layer = document.createElement('div');
-    layer.className = LAYER;
-
     [].forEach.call(slides.querySelectorAll('section:not(.stack)'), function (section) {
       // reveal's own bookkeeping: unloading a slide is this and nothing else.
       if (section.style.display !== 'none') return;
       var ghost = document.createElement('button');
       ghost.type = 'button';
-      ghost.className = 'deck-overview-ghost';
+      ghost.className = GHOST;
+      ghost.setAttribute('data-for', section.id || '');
       ghost.textContent = title(section);
       ghost.style.width = card.width + 'px';
       ghost.style.height = card.height + 'px';
@@ -298,10 +298,8 @@ window.selectedAnnoteEl = null;
         var at = Reveal.getIndices(section);
         Reveal.slide(at.h, at.v || 0);   // a slide outside a stack has no v
       });
-      layer.appendChild(ghost);
+      section.parentElement.appendChild(ghost);
     });
-
-    if (layer.children.length) slides.appendChild(layer);
   }
 
   function attach() {
