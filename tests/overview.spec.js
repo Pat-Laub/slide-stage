@@ -476,3 +476,33 @@ test('a placeholder sits in the column of the stack it belongs to', async ({ bro
 
   await context.close();
 });
+
+// The grid loads about twice the slides it can show, and each one is a
+// slide-sized surface authored at 4K. Letting the browser skip the ones that
+// are not on screen is what keeps the web process alive; see the note in
+// slide-stage.scss for what it was dying of.
+test('the touch overview lets the browser skip the cards it is not showing', async ({ browser, baseURL }) => {
+  const { context, page } = await touchOverview(browser, baseURL);
+
+  const supported = await page.evaluate(() => CSS.supports('content-visibility', 'auto'));
+  test.skip(!supported, 'this browser has no content-visibility');
+
+  const card = await page.evaluate(() => {
+    const style = getComputedStyle(document.querySelector('.reveal.overview .slides section:not(.stack)'));
+    return { visibility: style.contentVisibility, intrinsic: style.containIntrinsicSize };
+  });
+
+  expect(card.visibility, 'the cards are all being rendered').toBe('auto');
+  expect(card.intrinsic, 'without an intrinsic size the grid loses its geometry').not.toBe('none');
+
+  await context.close();
+});
+
+test('a desktop overview renders every card, having loaded them all', async ({ page }) => {
+  await openOverview(page, { width: 1440, height: 900 });
+
+  const visibility = await page.evaluate(() =>
+    getComputedStyle(document.querySelector('.reveal.overview .slides section:not(.stack)')).contentVisibility);
+
+  expect(visibility).not.toBe('auto');
+});
