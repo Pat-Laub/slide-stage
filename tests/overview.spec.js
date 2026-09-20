@@ -457,21 +457,23 @@ test('a placeholder sits in the column of the stack it belongs to', async ({ bro
   const placed = await page.evaluate(() =>
     [...document.querySelectorAll('.deck-overview-ghost')].map(ghost => {
       const section = document.getElementById(ghost.getAttribute('data-for'));
-      const stack = section.closest('section.stack');
+      const stack = section.closest('section.stack') || section.parentElement;
       return {
         id: ghost.getAttribute('data-for'),
         ghostLeft: Math.round(ghost.getBoundingClientRect().left),
-        stackLeft: Math.round((stack || section.parentElement).getBoundingClientRect().left)
+        // A card is offset from its section by the page's insets, so the two
+        // are not equal -- but the offset is the same for every one of them.
+        offset: Math.round(ghost.getBoundingClientRect().left - stack.getBoundingClientRect().left)
       };
     }));
 
   expect(placed.length, 'no placeholders on a deck this size').toBeGreaterThan(0);
-  for (const cell of placed) {
-    expect(Math.abs(cell.ghostLeft - cell.stackLeft),
-      `${cell.id} stands at ${cell.ghostLeft}, its column is at ${cell.stackLeft}`).toBeLessThanOrEqual(2);
-  }
+
+  const offsets = new Set(placed.map(cell => cell.offset));
+  expect(offsets.size, `placeholders sit at different offsets from their columns: ${[...offsets]}`).toBe(1);
+
   // A deck with several stacks must not put them all in one column.
-  expect(new Set(placed.map(c => c.ghostLeft)).size,
+  expect(new Set(placed.map(cell => cell.ghostLeft)).size,
     'every placeholder landed in the same column').toBeGreaterThan(1);
 
   await context.close();
@@ -481,19 +483,31 @@ test('a placeholder sits in the column of the stack it belongs to', async ({ bro
 // slide-sized surface authored at 4K. Letting the browser skip the ones that
 // are not on screen is what keeps the web process alive; see the note in
 // slide-stage.scss for what it was dying of.
-test('the touch overview lets the browser skip the cards it is not showing', async ({ browser, baseURL }) => {
-  const { context, page } = await touchOverview(browser, baseURL);
+test('the touch overview takes the cards off the screen out of rendering', async ({ browser, baseURL }) => {
+  const { context, page } = await touchOverview(browser, baseURL, '/docs/stacked.slides.html');
+  test.skip(!await page.evaluate(() => CSS.supports('content-visibility', 'hidden')),
+    'this browser has no content-visibility');
 
-  const supported = await page.evaluate(() => CSS.supports('content-visibility', 'auto'));
-  test.skip(!supported, 'this browser has no content-visibility');
-
-  const card = await page.evaluate(() => {
-    const style = getComputedStyle(document.querySelector('.reveal.overview .slides section:not(.stack)'));
-    return { visibility: style.contentVisibility, intrinsic: style.containIntrinsicSize };
+  const cards = await page.evaluate(() => {
+    const onScreen = el => {
+      const box = el.getBoundingClientRect();
+      return box.width > 0 && box.right > 0 && box.left < innerWidth && box.bottom > 0 && box.top < innerHeight;
+    };
+    return [...document.querySelectorAll('.reveal.overview .slides section:not(.stack)')]
+      .filter(section => section.style.display !== 'none')
+      .map(section => ({
+        id: section.id,
+        seen: onScreen(section),
+        skipped: getComputedStyle(section).contentVisibility === 'hidden'
+      }));
   });
 
-  expect(card.visibility, 'the cards are all being rendered').toBe('auto');
-  expect(card.intrinsic, 'without an intrinsic size the grid loses its geometry').not.toBe('none');
+  expect(cards.some(card => card.skipped), 'nothing was taken out of rendering').toBe(true);
+  for (const card of cards) {
+    // A card that can be seen must render: content-visibility brings paint
+    // containment, which would clip the 16:9 card and its rail away.
+    if (card.seen) expect(card.skipped, `${card.id} is on screen and not being rendered`).toBe(false);
+  }
 
   await context.close();
 });
@@ -501,8 +515,41 @@ test('the touch overview lets the browser skip the cards it is not showing', asy
 test('a desktop overview renders every card, having loaded them all', async ({ page }) => {
   await openOverview(page, { width: 1440, height: 900 });
 
-  const visibility = await page.evaluate(() =>
-    getComputedStyle(document.querySelector('.reveal.overview .slides section:not(.stack)')).contentVisibility);
+  const skipped = await page.evaluate(() =>
+    [...document.querySelectorAll('.reveal.overview .slides section:not(.stack)')]
+      .filter(section => getComputedStyle(section).contentVisibility === 'hidden').length);
 
-  expect(visibility).not.toBe('auto');
+  expect(skipped, 'the desktop grid stopped rendering cards').toBe(0);
+});
+
+// A placeholder is a card, so it has to be the same box as a card: same size,
+// same offset from the section it stands with, and its rail against its right
+// edge. Off by the page's insets and it sits visibly inside the grid its
+// neighbours are on.
+test('a placeholder is the same box as a real card', async ({ browser, baseURL }) => {
+  const { context, page } = await touchOverview(browser, baseURL);
+
+  const measured = await page.evaluate(() => {
+    const loaded = [...document.querySelectorAll('.reveal.overview .slides section:not(.stack)')]
+      .find(s => s.style.display !== 'none' && s.getBoundingClientRect().width > 0);
+    const card = getComputedStyle(loaded, '::before');
+    const ghost = document.querySelector('.deck-overview-ghost');
+    const ghostStyle = getComputedStyle(ghost);
+    return {
+      card: { width: parseFloat(card.width), height: parseFloat(card.height), left: parseFloat(card.left), top: parseFloat(card.top) },
+      ghost: { width: parseFloat(ghostStyle.width), height: parseFloat(ghostStyle.height),
+               left: parseFloat(ghostStyle.marginLeft), top: parseFloat(ghostStyle.marginTop) },
+      rail: parseFloat(getComputedStyle(ghost, '::after').left),
+      railWidth: parseFloat(getComputedStyle(ghost, '::after').width)
+    };
+  });
+
+  expect(measured.ghost.width, 'a placeholder is not card-width').toBeCloseTo(measured.card.width, 0);
+  expect(measured.ghost.height, 'a placeholder is not card-height').toBeCloseTo(measured.card.height, 0);
+  expect(measured.ghost.left, 'a placeholder is not offset like a card').toBeCloseTo(measured.card.left, 0);
+  expect(measured.ghost.top).toBeCloseTo(measured.card.top, 0);
+  expect(measured.rail + measured.railWidth, 'the rail is not against the card\'s right edge')
+    .toBeCloseTo(measured.card.width, 0);
+
+  await context.close();
 });
