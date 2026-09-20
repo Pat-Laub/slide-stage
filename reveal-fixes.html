@@ -194,6 +194,19 @@ window.selectedAnnoteEl = null;
 // loaded slide drops straight into its correct spot. We re-run on slidechanged
 // because moving around inside Overview calls slide(), which unloads far slides
 // again. Outside Overview we do nothing, so normal lazy-loading is untouched.
+//
+// Not on a touch device. There the cost is the point: opening the overview in
+// the middle of a 50-slide lecture deck killed the WebContent process on an
+// iPad Pro every time it was tried, which ends a lecture rather than making a
+// grid look patchy. With this pass off, reveal's own lazy loading brings up 26
+// of those 50 and the overview survives being opened and closed all day.
+//
+// Drawing the ones it leaves out -- forced visible with only their headings,
+// so none of the content is laid out -- was measured too, on the theory that
+// an empty card is nearly free. It is not: that crashed on the first open,
+// exactly as eager loading did, so the cost is in having the cells at all
+// rather than in what is inside them. Reveal's view distance is wider than the
+// grid shows in any case, so the cards this loses are off-screen ones.
 (function () {
   function loadAll() {
     if (!window.Reveal || !Reveal.isOverview || !Reveal.isOverview()) return;
@@ -208,8 +221,10 @@ window.selectedAnnoteEl = null;
   function attach() {
     if (attached || !window.Reveal || !Reveal.on) return false;
     attached = true;
-    Reveal.on('overviewshown', loadAll);
-    Reveal.on('slidechanged', loadAll); // moving within Overview re-unloads far slides
+    if (!matchMedia('(any-pointer: coarse)').matches) {
+      Reveal.on('overviewshown', loadAll);
+      Reveal.on('slidechanged', loadAll); // moving within Overview re-unloads far slides
+    }
     return true;
   }
 
