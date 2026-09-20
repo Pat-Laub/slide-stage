@@ -659,3 +659,105 @@ html.reveal-print {
 .deck-stage-overview > .deck-launchers > .deck-launcher:not(.deck-launcher-overview) {
   display: none !important;
 }
+
+// The thumbnail overview, deck-thumbs.html.
+//
+// Everything here is in screen pixels, not slide units: the panel is a sibling
+// of the stage inside the viewport shell, outside the fit transform entirely.
+// That is the whole point of it. Reveal's overview draws each cell as the
+// authored 3744 x 2106 page and lets the transform shrink it, so fifty cells
+// are fifty 4K surfaces; these are ~520px JPEGs shown at the size they are.
+//
+// Inside the shell rather than the body so it survives fullscreen, which
+// deck-stage-open.html requests on the shell.
+$thumb-width: clamp(140px, 17vw, 260px);
+
+.deck-thumbs {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  overflow: auto;
+  // The grid scrolls, the deck behind it does not.
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 24px;
+  background: #e8e9e9;
+}
+
+.deck-thumbs[hidden] {
+  display: none;
+}
+
+.deck-thumbs-grid {
+  display: grid;
+  // Columns are the deck's stacks and rows the slides within them, so the grid
+  // reads as the same 2-D map reveal's overview draws. Sized rather than
+  // auto-fitted: a column has to stay a column even when it is one slide tall.
+  grid-auto-columns: #{$thumb-width};
+  grid-auto-rows: max-content;
+  gap: 18px;
+  justify-content: start;
+  align-content: start;
+  width: max-content;
+}
+
+.deck-thumb {
+  position: relative;
+  display: block;
+  padding: 0;
+  border: 0;
+  outline: 1px solid rgba($mainColor, 0.22);
+  background: $body-bg;
+  cursor: pointer;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+}
+
+.deck-thumb.is-current {
+  outline: 3px solid $link-color;
+}
+
+.deck-thumb-number {
+  position: absolute;
+  right: 4px;
+  bottom: 3px;
+  font-family: inherit;
+  font-size: 11px;
+  line-height: 1;
+  color: rgba($mainColor, 0.55);
+}
+
+// The way back out that does not also change slide, mirroring the role the
+// grid button plays inside reveal's own overview.
+// Bottom-left, where the launcher row the grid button lives in sits, so the
+// way out is under the finger that opened it. Fixed rather than absolute: the
+// panel itself is the scroller, and nothing between here and the viewport is
+// transformed, so this stays put while the grid moves under it.
+.deck-thumbs-close {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: $mainColor;
+  cursor: pointer;
+
+  svg {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+.print-pdf .deck-thumbs {
+  display: none !important;
+}
