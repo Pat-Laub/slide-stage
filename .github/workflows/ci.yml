@@ -11,6 +11,11 @@ jobs:
       matrix:
         os: [macos-latest, ubuntu-latest]
     runs-on: ${{ matrix.os }}
+    # The working copy is ~/slide-stage/src on the machine this is developed
+    # on, because the repository lives in Dropbox; scripts/buildpaths.js
+    # derives that and refuses to guess. A checkout is the tree itself.
+    env:
+      BUILD_ROOT: ${{ github.workspace }}
     steps:
       - uses: actions/checkout@v4
       - uses: quarto-dev/quarto-actions/setup@v2
@@ -19,7 +24,7 @@ jobs:
           node-version: 20
       - run: npm ci
       - run: npx playwright install --with-deps chromium firefox webkit
-      - run: npm run render
+      - run: quarto render    # `npm run render` is qr, which is for the Dropbox tree
       # Screenshot baselines are per-platform and only the darwin ones are
       # committed, so the image comparisons run on macOS and the assertions
       # run everywhere. To add linux baselines, run this job once on ubuntu
