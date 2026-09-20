@@ -295,6 +295,46 @@ $ov-content-width: $content-width * $ov-scale;
   display: none !important;
 }
 
+// The cards reveal-fixes.html draws where the touch overview has no slide
+// loaded. Sized and placed from the card geometry published above, so they sit
+// on the grid with the real previews; styled to match the card and its rail so
+// the grid reads as one map with some of it summarised.
+.deck-overview-ghosts {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.deck-overview-ghost {
+  position: absolute;
+  left: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: #{$content-top * $ov-scale} #{$content-left * $ov-scale};
+  border: 0;
+  outline: 3px solid rgba($mainColor, 0.18);
+  background: $body-bg;
+  color: rgba($mainColor, 0.65);
+  font-family: inherit;
+  font-size: #{$presentation-h1-font-size * $presentation-font-size-root * $ov-scale};
+  line-height: 1.15;
+  text-align: left;
+  overflow: hidden;
+  pointer-events: auto;
+  cursor: pointer;
+
+  // The rail, in the same place the real card's ::after puts it.
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: #{$ov-rail-left};
+    width: #{$ov-rail};
+    background: $stage-rail-background;
+  }
+}
+
 // Reveal's print view repeats only the inner application. The PDF compositor
 // wraps every `.pdf-page` in this same outer page geometry.
 html.reveal-print {
