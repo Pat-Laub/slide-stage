@@ -295,6 +295,29 @@ $ov-content-width: $content-width * $ov-scale;
   display: none !important;
 }
 
+// Let the browser skip the cards it is not showing.
+//
+// Reveal's overview view distance is 6 on a touch device and hardcoded there
+// -- `viewDistance` is ignored in the grid -- so it loads about twice as many
+// slides as the grid can show, and every one of them is a slide-sized surface
+// authored at 4K. That is what the web process was dying of: it was killed at
+// 5.4 GB, and unloading afterwards is too late because reveal has already made
+// the subtrees live.
+//
+// `content-visibility: auto` is the lever that does not cost anything to look
+// at: the slides stay authored at full size, so a preview on screen is as
+// sharp as it was, and the ones scrolled out of the grid stop being rendered
+// at all. `contain-intrinsic-size` holds their boxes at the card size so the
+// grid keeps its geometry and the placeholders keep landing in the right
+// cells. Measured on an iPad Pro: without it the deck died on the first jump
+// out of the grid, with it twelve in a row were clean.
+@media (any-pointer: coarse) {
+  .reveal.overview .slides section:not(.stack) {
+    content-visibility: auto;
+    contain-intrinsic-size: #{$ov-card-width} #{$ov-card-height};
+  }
+}
+
 // The cards reveal-fixes.html draws where the touch overview has no slide
 // loaded. Sized and placed from the card geometry published above, so they sit
 // on the grid with the real previews; styled to match the card and its rail so
