@@ -65,12 +65,29 @@ tests/                      Playwright, cross-browser
 
 ## Testing
 
+This repository lives in Dropbox, which parks a Quarto render's half-written
+files beside themselves as conflicted copies and leaves the stale ones in
+place — a test run then reads a deck that is a version behind, silently. So
+only the source and `.git` are here: the render, `node_modules` and the
+Playwright output live in a working copy outside the synced folder, at
+`~/slide-stage/src`, which `qr` rsyncs this tree to. `.mirrorignore` says what
+the sync leaves alone there, and dropping a line from it deletes what it named
+on the next sync.
+
 ```sh
-npm install
+npm run render      # = qr: sync, then render into ~/slide-stage/src/docs
+cd ~/slide-stage/src
+npm install         # first time, in the working copy
 npx playwright install chromium firefox webkit
-npm run render      # builds index.qmd and bare.qmd into docs/
 npm test            # chromium, firefox, webkit
 ```
+
+`playwright.config.js` reads `scripts/buildpaths.js`, which derives the output
+directory from the working copy's parent and refuses to run in a tree that is
+not `src`, so a test run started here in Dropbox stops rather than testing a
+stale render. Editing a test changes nothing there until the tree is synced
+again: `qr --sync` does that without rendering. CI checks the tree out as
+itself and sets `BUILD_ROOT` to say so.
 
 `tests/layout.spec.js` and `tests/overview.spec.js` assert the authored geometry
 reached the content. `tests/bare-stage.spec.js` is the theme-neutrality
