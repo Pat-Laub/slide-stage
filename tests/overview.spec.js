@@ -321,3 +321,63 @@ test('overview shows every slide, including uncounted ones', async ({ page }) =>
 
   expect(blank, `slides left unloaded in overview: ${blank.join(', ')}`).toEqual([]);
 });
+
+/* --------------------------- the touch overview -------------------------- */
+// Eagerly loading every slide is what makes the overview a memory cliff on the
+// iPad: opening it in the middle of a 50-slide lecture deck killed the
+// WebContent process on the first try, every try. With the eager pass off,
+// reveal's own lazy loading brings up 26 of those 50 and the overview survives
+// being opened and closed all day.
+//
+// Drawing the ones it leaves out -- forced visible with only their headings,
+// so none of the content is laid out -- was measured too, on the theory that
+// an empty card is nearly free. It is not: that crashed on the first open,
+// exactly as eager loading did. So the second test here is a guard against
+// bringing that back, not an oversight.
+//
+// Chromium, firefox and webkit all report `any-pointer: coarse` under touch
+// emulation, but none of them is iPadOS; `npm run test:ipad` is what puts this
+// in front of the real thing.
+
+const TOUCH = { hasTouch: true, isMobile: true, viewport: { width: 1440, height: 900 } };
+
+async function touchOverview(browser, baseURL, deck = '/docs/index.slides.html') {
+  const context = await browser.newContext({ ...TOUCH, baseURL });
+  const page = await context.newPage();
+  await page.goto(deck);
+  await page.waitForFunction(() => window.Reveal && Reveal.isReady());
+  await page.evaluate(() => Reveal.toggleOverview(true));
+  await page.waitForFunction(() => Reveal.isOverview());
+  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  return { context, page };
+}
+
+// Reveal's own bookkeeping, read straight off the attribute it writes: the
+// eager loader would have cleared every one of these.
+const unloadedSections = page => page.evaluate(() =>
+  [...document.querySelectorAll('.reveal .slides section:not(.stack)')]
+    .filter(section => section.style.display === 'none').map(section => section.id));
+
+test('a touch overview leaves the distant slides unloaded', async ({ browser, baseURL }) => {
+  const { context, page } = await touchOverview(browser, baseURL);
+
+  const unloaded = await unloadedSections(page);
+  expect(unloaded.length, 'every slide was loaded, as on the desktop').toBeGreaterThan(0);
+
+  await context.close();
+});
+
+// The cells cost what the cells cost, whether or not anything is in them.
+test('a touch overview draws nothing reveal left unloaded', async ({ browser, baseURL }) => {
+  const { context, page } = await touchOverview(browser, baseURL);
+
+  const drawn = await page.evaluate(() =>
+    [...document.querySelectorAll('.reveal .slides section:not(.stack)')]
+      .filter(section => section.style.display === 'none')
+      .filter(section => getComputedStyle(section).display !== 'none')
+      .map(section => section.id));
+
+  expect(drawn, `drawn although reveal unloaded them: ${drawn.join(', ')}`).toEqual([]);
+
+  await context.close();
+});
