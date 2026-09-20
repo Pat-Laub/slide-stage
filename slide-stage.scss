@@ -758,6 +758,12 @@ $thumb-width: clamp(140px, 17vw, 260px);
   }
 }
 
+// The launcher row belongs to the deck, and the panel covers the deck. Its own
+// close button is the way out while the grid is up.
+.deck-stage.deck-stage-thumbs > .deck-launchers {
+  display: none !important;
+}
+
 .print-pdf .deck-thumbs {
   display: none !important;
 }
