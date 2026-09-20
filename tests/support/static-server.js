@@ -8,7 +8,7 @@ const root = path.resolve(__dirname, '../..');
 // posts its measurements back here for the script to collect and assert on.
 const results = new Map();
 const PROBE_JS = fs.readFileSync(path.join(__dirname, 'probe.js'), 'utf8');
-const types = { '.css': 'text/css', '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.svg': 'image/svg+xml' };
+const types = { '.css': 'text/css', '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml' };
 
 http.createServer((req, res) => {
   const url = new URL(req.url, 'http://localhost');
