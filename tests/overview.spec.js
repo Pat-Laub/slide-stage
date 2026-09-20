@@ -381,3 +381,67 @@ test('a touch overview draws nothing reveal left unloaded', async ({ browser, ba
 
   await context.close();
 });
+
+// What stands in for a slide the touch overview did not load. The section
+// itself stays untouched -- see the test above, and the note in
+// reveal-fixes.html for what happened when it did not.
+const ghosts = page => page.locator('.deck-overview-ghost');
+
+test('a touch overview stands a placeholder where a slide is not loaded', async ({ browser, baseURL }) => {
+  const { context, page } = await touchOverview(browser, baseURL);
+
+  const unloaded = await unloadedSections(page);
+  expect(unloaded.length, 'nothing was left unloaded to stand in for').toBeGreaterThan(0);
+  await expect(ghosts(page)).toHaveCount(unloaded.length);
+
+  const cards = await ghosts(page).evaluateAll(all => all.map(ghost => {
+    const box = ghost.getBoundingClientRect();
+    return { text: (ghost.textContent || '').trim(), width: box.width, height: box.height };
+  }));
+  for (const card of cards) {
+    expect(card.text, 'a placeholder with no title on it').not.toBe('');
+    expect(card.width, 'a placeholder with no box').toBeGreaterThan(0);
+    expect(card.height).toBeGreaterThan(0);
+  }
+
+  await context.close();
+});
+
+test('a placeholder goes to the slide it stands for', async ({ browser, baseURL }) => {
+  const { context, page } = await touchOverview(browser, baseURL);
+
+  const wanted = await page.evaluate(() => {
+    const section = [...document.querySelectorAll('.reveal .slides section:not(.stack)')]
+      .find(s => s.style.display === 'none');
+    const at = Reveal.getIndices(section);
+    // A slide that is not in a stack has no vertical index at all.
+    return { id: section.id, h: at.h, v: at.v || 0 };
+  });
+
+  await ghosts(page).first().click();
+
+  await expect.poll(() => page.evaluate(() => {
+    const at = Reveal.getIndices();
+    return `${at.h},${at.v}`;
+  }), { message: 'the placeholder went nowhere' }).toBe(`${wanted.h},${wanted.v}`);
+
+  await context.close();
+});
+
+test('the placeholders go when the grid closes', async ({ browser, baseURL }) => {
+  const { context, page } = await touchOverview(browser, baseURL);
+  await expect(ghosts(page)).not.toHaveCount(0);
+
+  await page.evaluate(() => Reveal.toggleOverview(false));
+  await page.waitForFunction(() => !Reveal.isOverview());
+
+  await expect(ghosts(page)).toHaveCount(0);
+
+  await context.close();
+});
+
+test('a desktop overview has no placeholders, because it loads every slide', async ({ page }) => {
+  await openOverview(page, { width: 1440, height: 900 });
+
+  await expect(page.locator('.deck-overview-ghost')).toHaveCount(0);
+});
