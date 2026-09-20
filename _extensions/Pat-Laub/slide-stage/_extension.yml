@@ -34,4 +34,5 @@ contributes:
         - deck-stage-open.html
       include-after-body:
         - reveal-fixes.html
+        - deck-thumbs.html
         - deck-stage-close.html

@@ -140,7 +140,10 @@
     '<rect x="3" y="14" width="7" height="7" rx="1"/>' +
     '<rect x="14" y="14" width="7" height="7" rx="1"/></svg>';
   grid.addEventListener('click', function () {
-    if (window.Reveal && Reveal.toggleOverview) Reveal.toggleOverview();
+    // deck-thumbs.html claims this hook when the deck was built with baked
+    // previews; without them the button opens reveal's own live overview.
+    if (stage.deckOverview) stage.deckOverview();
+    else if (window.Reveal && Reveal.toggleOverview) Reveal.toggleOverview();
   });
   launchers.appendChild(grid);
   stage.appendChild(launchers);
