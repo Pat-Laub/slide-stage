@@ -445,3 +445,34 @@ test('a desktop overview has no placeholders, because it loads every slide', asy
 
   await expect(page.locator('.deck-overview-ghost')).toHaveCount(0);
 });
+
+// A slide inside a stack carries only its vertical offset -- reveal puts the
+// column on the stack -- so a placeholder has to sit in the same parent the
+// slide does. Hung off `.slides` instead, every one of them lands in the first
+// column, which is a map that lies rather than a map with gaps. Measured on
+// the stacked deck, the only fixture laid out in two directions.
+test('a placeholder sits in the column of the stack it belongs to', async ({ browser, baseURL }) => {
+  const { context, page } = await touchOverview(browser, baseURL, '/docs/stacked.slides.html');
+
+  const placed = await page.evaluate(() =>
+    [...document.querySelectorAll('.deck-overview-ghost')].map(ghost => {
+      const section = document.getElementById(ghost.getAttribute('data-for'));
+      const stack = section.closest('section.stack');
+      return {
+        id: ghost.getAttribute('data-for'),
+        ghostLeft: Math.round(ghost.getBoundingClientRect().left),
+        stackLeft: Math.round((stack || section.parentElement).getBoundingClientRect().left)
+      };
+    }));
+
+  expect(placed.length, 'no placeholders on a deck this size').toBeGreaterThan(0);
+  for (const cell of placed) {
+    expect(Math.abs(cell.ghostLeft - cell.stackLeft),
+      `${cell.id} stands at ${cell.ghostLeft}, its column is at ${cell.stackLeft}`).toBeLessThanOrEqual(2);
+  }
+  // A deck with several stacks must not put them all in one column.
+  expect(new Set(placed.map(c => c.ghostLeft)).size,
+    'every placeholder landed in the same column').toBeGreaterThan(1);
+
+  await context.close();
+});

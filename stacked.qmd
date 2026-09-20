@@ -2,32 +2,222 @@
 title: "Stacked Stage"
 ---
 
-# Vertical navigation is a stack {#stacks-one}
+<!-- Six stacks of eight, which is more than reveal's overview view distance:
+     some of these slides are always unloaded when the grid is open, which is
+     what the touch overview's placeholders are measured against. -->
 
-A level-one heading opens a stack; the level-two slides beneath it become its
-vertical children. The overview grid is the only place the stage has to lay
-those out in two directions at once, so this deck exists to be measured there.
+# Stack 1 is a column {#stack-1}
 
-## Inside the first stack {#stack-one-top}
+A level-one heading opens a stack; the level-two slides beneath it become its vertical children. This is column 1.
 
-The top of the stack. Overview puts this card in the first row of its column.
+## Slide 1.1 {#stack-1-slide-1}
 
-## Still in the first stack {#stack-one-middle}
+Row 1 of column 1. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
 
-The second card of the column, one vertical pitch below the one above it.
+## Slide 1.2 {#stack-1-slide-2}
 
-## The end of the first stack {#stack-one-bottom}
+Row 2 of column 1. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
 
-The third and last card of the column.
+## Slide 1.3 {#stack-1-slide-3}
 
-# A second stack {#stacks-two}
+Row 3 of column 1. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
 
-Two stacks side by side give the grid both a row and a column to measure.
+## Slide 1.4 {#stack-1-slide-4}
 
-## Inside the second stack {#stack-two-top}
+Row 4 of column 1. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
 
-The top of the second column.
+## Slide 1.5 {#stack-1-slide-5}
 
-## Still in the second stack {#stack-two-middle}
+Row 5 of column 1. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
 
-The second card of the second column.
+## Slide 1.6 {#stack-1-slide-6}
+
+Row 6 of column 1. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 1.7 {#stack-1-slide-7}
+
+Row 7 of column 1. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 1.8 {#stack-1-slide-8}
+
+Row 8 of column 1. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+# Stack 2 is a column {#stack-2}
+
+A level-one heading opens a stack; the level-two slides beneath it become its vertical children. This is column 2.
+
+## Slide 2.1 {#stack-2-slide-1}
+
+Row 1 of column 2. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 2.2 {#stack-2-slide-2}
+
+Row 2 of column 2. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 2.3 {#stack-2-slide-3}
+
+Row 3 of column 2. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 2.4 {#stack-2-slide-4}
+
+Row 4 of column 2. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 2.5 {#stack-2-slide-5}
+
+Row 5 of column 2. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 2.6 {#stack-2-slide-6}
+
+Row 6 of column 2. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 2.7 {#stack-2-slide-7}
+
+Row 7 of column 2. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 2.8 {#stack-2-slide-8}
+
+Row 8 of column 2. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+# Stack 3 is a column {#stack-3}
+
+A level-one heading opens a stack; the level-two slides beneath it become its vertical children. This is column 3.
+
+## Slide 3.1 {#stack-3-slide-1}
+
+Row 1 of column 3. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 3.2 {#stack-3-slide-2}
+
+Row 2 of column 3. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 3.3 {#stack-3-slide-3}
+
+Row 3 of column 3. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 3.4 {#stack-3-slide-4}
+
+Row 4 of column 3. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 3.5 {#stack-3-slide-5}
+
+Row 5 of column 3. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 3.6 {#stack-3-slide-6}
+
+Row 6 of column 3. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 3.7 {#stack-3-slide-7}
+
+Row 7 of column 3. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 3.8 {#stack-3-slide-8}
+
+Row 8 of column 3. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+# Stack 4 is a column {#stack-4}
+
+A level-one heading opens a stack; the level-two slides beneath it become its vertical children. This is column 4.
+
+## Slide 4.1 {#stack-4-slide-1}
+
+Row 1 of column 4. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 4.2 {#stack-4-slide-2}
+
+Row 2 of column 4. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 4.3 {#stack-4-slide-3}
+
+Row 3 of column 4. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 4.4 {#stack-4-slide-4}
+
+Row 4 of column 4. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 4.5 {#stack-4-slide-5}
+
+Row 5 of column 4. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 4.6 {#stack-4-slide-6}
+
+Row 6 of column 4. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 4.7 {#stack-4-slide-7}
+
+Row 7 of column 4. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 4.8 {#stack-4-slide-8}
+
+Row 8 of column 4. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+# Stack 5 is a column {#stack-5}
+
+A level-one heading opens a stack; the level-two slides beneath it become its vertical children. This is column 5.
+
+## Slide 5.1 {#stack-5-slide-1}
+
+Row 1 of column 5. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 5.2 {#stack-5-slide-2}
+
+Row 2 of column 5. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 5.3 {#stack-5-slide-3}
+
+Row 3 of column 5. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 5.4 {#stack-5-slide-4}
+
+Row 4 of column 5. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 5.5 {#stack-5-slide-5}
+
+Row 5 of column 5. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 5.6 {#stack-5-slide-6}
+
+Row 6 of column 5. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 5.7 {#stack-5-slide-7}
+
+Row 7 of column 5. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 5.8 {#stack-5-slide-8}
+
+Row 8 of column 5. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+# Stack 6 is a column {#stack-6}
+
+A level-one heading opens a stack; the level-two slides beneath it become its vertical children. This is column 6.
+
+## Slide 6.1 {#stack-6-slide-1}
+
+Row 1 of column 6. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 6.2 {#stack-6-slide-2}
+
+Row 2 of column 6. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 6.3 {#stack-6-slide-3}
+
+Row 3 of column 6. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 6.4 {#stack-6-slide-4}
+
+Row 4 of column 6. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 6.5 {#stack-6-slide-5}
+
+Row 5 of column 6. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 6.6 {#stack-6-slide-6}
+
+Row 6 of column 6. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 6.7 {#stack-6-slide-7}
+
+Row 7 of column 6. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
+
+## Slide 6.8 {#stack-6-slide-8}
+
+Row 8 of column 6. The overview grid is the only place the stage lays slides out in two directions at once, so this deck exists to be measured there.
