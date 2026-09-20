@@ -302,11 +302,36 @@ window.selectedAnnoteEl = null;
     });
   }
 
+  // The grid loads about twice the slides it can show. Mark the ones that are
+  // not on screen so the stylesheet can take them out of rendering; an
+  // observer rather than a measurement on every event, so scrolling the grid
+  // brings them back by itself. The margin is a card's width of slack, so a
+  // card is ready before it is reached rather than appearing as it arrives.
+  var watcher = null;
+  function watch() {
+    unwatch();
+    if (!window.IntersectionObserver) return;
+    watcher = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        entry.target.classList.toggle('deck-overview-offscreen', !entry.isIntersecting);
+      });
+    }, { rootMargin: '50%' });
+    [].forEach.call(document.querySelectorAll('.reveal .slides section:not(.stack)'), function (section) {
+      watcher.observe(section);
+    });
+  }
+  function unwatch() {
+    if (watcher) { watcher.disconnect(); watcher = null; }
+    [].forEach.call(document.querySelectorAll('.deck-overview-offscreen'), function (section) {
+      section.classList.remove('deck-overview-offscreen');
+    });
+  }
+
   function attach() {
     if (!window.Reveal || !Reveal.on) return false;
     if (!matchMedia('(any-pointer: coarse)').matches) return true;
-    Reveal.on('overviewshown', draw);
-    Reveal.on('overviewhidden', clear);
+    Reveal.on('overviewshown', function () { draw(); watch(); });
+    Reveal.on('overviewhidden', function () { clear(); unwatch(); });
     // Moving inside the grid reloads one neighbourhood and unloads another.
     Reveal.on('slidechanged', draw);
     return true;

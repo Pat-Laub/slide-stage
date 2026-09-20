@@ -295,25 +295,24 @@ $ov-content-width: $content-width * $ov-scale;
   display: none !important;
 }
 
-// Let the browser skip the cards it is not showing.
+// Let the browser skip the cards that are not on screen.
 //
 // Reveal's overview view distance is 6 on a touch device and hardcoded there
 // -- `viewDistance` is ignored in the grid -- so it loads about twice as many
 // slides as the grid can show, and every one of them is a slide-sized surface
 // authored at 4K. That is what the web process was dying of: it was killed at
-// 5.4 GB, and unloading afterwards is too late because reveal has already made
-// the subtrees live.
+// 5.4 GB, and unloading afterwards is too late, because reveal has already
+// made the subtrees live by the time any handler runs.
 //
-// `content-visibility: auto` is the lever that does not cost anything to look
-// at: the slides stay authored at full size, so a preview on screen is as
-// sharp as it was, and the ones scrolled out of the grid stop being rendered
-// at all. `contain-intrinsic-size` holds their boxes at the card size so the
-// grid keeps its geometry and the placeholders keep landing in the right
-// cells. Measured on an iPad Pro: without it the deck died on the first jump
-// out of the grid, with it twelve in a row were clean.
+// Only the cards off the screen, and only by the class reveal-fixes.html puts
+// on them: `content-visibility` brings paint containment with it, and a card
+// is drawn *outside* its section on purpose -- $ov-card-left hangs it off the
+// content frame's corner and the rail sits past the frame's right edge -- so
+// anything containing a card that can be seen clips the card and its rail
+// away. A card that is not being painted has nothing to lose by it.
 @media (any-pointer: coarse) {
-  .reveal.overview .slides section:not(.stack) {
-    content-visibility: auto;
+  .reveal.overview .slides section:not(.stack).deck-overview-offscreen {
+    content-visibility: hidden;
     contain-intrinsic-size: #{$ov-card-width} #{$ov-card-height};
   }
 }
@@ -325,8 +324,12 @@ $ov-content-width: $content-width * $ov-scale;
 .deck-overview-ghost {
   position: absolute;
   left: 0;
+  // The card is the authored page and a section is the content frame inside
+  // it, so a card is hung off the section's corner by the page's own insets --
+  // see $ov-card-left. A placeholder is a card, so it takes the same offsets;
+  // without them it sits inset from the grid its neighbours are on.
+  margin: #{$ov-card-top} 0 0 #{$ov-card-left};
   box-sizing: border-box;
-  margin: 0;
   padding: #{$content-top * $ov-scale} #{$content-left * $ov-scale};
   border: 0;
   outline: 3px solid rgba($mainColor, 0.18);
@@ -343,13 +346,14 @@ $ov-content-width: $content-width * $ov-scale;
   pointer-events: auto;
   cursor: pointer;
 
-  // The rail, in the same place the real card's ::after puts it.
+  // The rail, snug against the card's right edge. Not $ov-rail-left, which is
+  // measured from a section's corner: this box is the page, not the frame.
   &::after {
     content: "";
     position: absolute;
     top: 0;
     bottom: 0;
-    left: #{$ov-rail-left};
+    left: #{($deck-width - $rail-width) * $ov-scale};
     width: #{$ov-rail};
     background: $stage-rail-background;
   }
