@@ -1,9 +1,7 @@
 const { test, expect } = require('@playwright/test');
 const fs = require('fs');
 const path = require('path');
-const { BUILD_ROOT } = require('../scripts/buildpaths.js');
-
-const DOCS = path.join(BUILD_ROOT, 'src', 'docs');
+const DOCS = path.join(__dirname, '..', 'docs');
 
 // A 1x1 JPEG. The panel is being measured, not the pictures: what matters is
 // that each card is a real decodable image at the deck's own aspect ratio,
