@@ -118,6 +118,14 @@ body.quarto-light {
   overflow: hidden;
 }
 
+// Opacity alone leaves neighbouring slides in the browser's text selection.
+// A drag starting beside a heading can then copy every preceding hidden slide.
+// Keep their layout for Reveal, but exclude them from live text selection.
+// Overview, scroll view and PDF output must still expose all their slides.
+html:not(.print-pdf) .reveal:not(.overview):not(.reveal-scroll) .slides section:not(.present) {
+  visibility: hidden;
+}
+
 // Reveal creates these as children of its inset root. Fixed positioning makes
 // them use the transformed outer stage as their containing block, so chrome is
 // part of the 16:9 page while slide content remains clipped to the inner frame.
