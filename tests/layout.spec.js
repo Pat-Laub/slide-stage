@@ -289,3 +289,27 @@ test('lettered list markers are lettered and lower-case in every engine', async 
   expect(claimed).toEqual(['decimal', 'lower-alpha']);
   await context.close();
 });
+
+// The content frame stops short of the page's bottom edge, where a footer sits.
+// Text that runs into that band must still be drawn, not cut off by the frame.
+test('slide text stays visible down to the bottom edge of the page', async ({ page }) => {
+  await page.goto(DECK);
+  await ready(page);
+  const result = await page.evaluate(() => {
+    const slide = document.querySelector('.reveal .slides section.present');
+    slide.innerHTML = '<p>' + Array.from({ length: 2000 }, (_, i) => 'word' + i).join(' ') + '</p>';
+    const words = slide.querySelector('p');
+    words.innerHTML = words.textContent.split(' ').map(w => `<span>${w}</span>`).join(' ');
+    const stage = document.querySelector('[data-deck-stage]').getBoundingClientRect();
+    const spans = Array.from(words.children).filter(s => { const r = s.getBoundingClientRect(); return r.top + r.height / 2 < stage.bottom; });
+    const bottom = spans[spans.length - 1].getBoundingClientRect().top;
+    const line = spans.filter(s => s.getBoundingClientRect().top === bottom);
+    const probe = line[Math.floor(line.length / 2)];
+    const last = probe.getBoundingClientRect();
+    const x = last.left + last.width / 2, y = last.top + last.height / 2;
+    const frame = document.querySelector('.reveal').getBoundingClientRect();
+    return { inBand: last.top > frame.bottom, hit: document.elementFromPoint(x, y) === probe };
+  });
+  expect(result.inBand).toBe(true);
+  expect(result.hit).toBe(true);
+});
