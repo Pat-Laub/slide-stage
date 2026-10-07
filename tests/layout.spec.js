@@ -313,3 +313,17 @@ test('slide text stays visible down to the bottom edge of the page', async ({ pa
   expect(result.inBand).toBe(true);
   expect(result.hit).toBe(true);
 });
+
+// Italic glyphs such as KaTeX's f hang left of the line's start.
+test('ink overhanging the left edge of a slide is not clipped', async ({ page }) => {
+  await page.goto(DECK);
+  await ready(page);
+  const hit = await page.evaluate(() => {
+    const slide = document.querySelector('.reveal .slides section.present');
+    slide.innerHTML = '<p style="text-align:left"><span style="margin-left:-6px">ffff</span></p>';
+    const probe = slide.querySelector('span');
+    const r = probe.getBoundingClientRect();
+    return document.elementFromPoint(r.left + 2, r.top + r.height / 2) === probe;
+  });
+  expect(hit).toBe(true);
+});
