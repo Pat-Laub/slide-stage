@@ -115,7 +115,7 @@ body.quarto-light {
 }
 
 .reveal:not(.overview) .slides {
-  clip-path: inset(-#{$content-top} 0 -#{$content-bottom} 0);
+  clip-path: inset(-#{$content-top} -0.5em -#{$content-bottom} -0.5em);
 }
 
 // Opacity alone leaves neighbouring slides in the browser's text selection.
