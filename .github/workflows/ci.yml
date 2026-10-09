@@ -34,5 +34,5 @@ jobs:
         if: failure()
         with:
           name: playwright-report-${{ matrix.os }}
-          path: playwright-report/
+          path: build/test-results/
           retention-days: 7
