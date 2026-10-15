@@ -75,7 +75,8 @@ So the stage can show pictures instead. If a directory sits beside the deck
 named after it with the final `.html` replaced by `.thumbs`, the grid button
 and the Esc and O keys open a plain scroller of those images rather than
 reveal's overview. No section is transformed, unloaded or touched, and
-`loading="lazy"` leaves the browser decoding only the cards on screen.
+`loading="lazy"` leaves the browser decoding only the cards on screen. The
+arrows and h/j/k/l move around it a card at a time, as they do reveal's.
 
     module-1-1.slides.html
     module-1-1.slides.thumbs/
