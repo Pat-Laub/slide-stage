@@ -105,6 +105,30 @@ test.describe('thumbnail overview', () => {
     expect(await page.evaluate(() => Reveal.getCurrentSlide().id)).toBe(target);
   });
 
+  test('arrow and vim keys walk the grid as reveal s overview does', async ({ page }) => {
+    await ready(page, '/docs/stacked.slides.html');
+    await page.evaluate(() => Reveal.slide(2, 1));
+    await page.keyboard.press('o');
+    await expect(page.locator('.deck-thumbs')).toBeVisible();
+
+    // A slide at a time across the 2-D map, keeping the row: the deck is in
+    // linear mode, which outside the grid makes these keys next/prev.
+    for (const [key, h, v] of [
+      ['ArrowDown', 2, 2], ['j', 2, 3], ['ArrowRight', 3, 3], ['l', 4, 3],
+      ['ArrowUp', 4, 2], ['k', 4, 1], ['ArrowLeft', 3, 1], ['h', 2, 1]
+    ]) {
+      await page.keyboard.press(key);
+      const index = shape.slice(0, h).flat().length + v;
+      await expect(page.locator('.deck-thumbs .deck-thumb').nth(index), key).toHaveClass(/is-current/);
+      await expect(page.locator('.deck-thumbs .deck-thumb.is-current'), key).toHaveCount(1);
+      expect(await page.evaluate(() => Reveal.getCurrentSlide().id), key).toBe(shape[h][v]);
+    }
+
+    await page.keyboard.press('Escape');
+    await expect(page.locator('.deck-thumbs')).toBeHidden();
+    expect(await page.evaluate(() => Reveal.getCurrentSlide().id)).toBe(shape[2][1]);
+  });
+
   test('a deck with no thumbnails keeps reveal s own overview', async ({ page }) => {
     await page.goto('/docs/index.slides.html');
     await page.waitForFunction(() => window.Reveal && Reveal.isReady());
