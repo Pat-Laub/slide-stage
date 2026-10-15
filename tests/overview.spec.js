@@ -302,6 +302,42 @@ test('every overview preview matches the full view of its slide', async ({ page 
   }
 });
 
+// A section is the content frame, and overview zooms its children onto the
+// card. Content laid out against the frame's height -- a flex column whose
+// spacer takes the spare room, as a theme's vfill does -- has to find that
+// height scaled with them, or the spare room grows and pushes it off the card.
+test('content pinned to the bottom of the frame keeps its place on the card', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/docs/index.slides.html#/what-this-is');
+  await page.waitForFunction(() => window.Reveal && Reveal.isReady());
+  await page.addStyleTag({ content: `
+    #what-this-is { display: flex !important; flex-direction: column; }
+    #what-this-is > .pinned { margin: auto 0 0 !important; }` });
+  await page.evaluate(() => {
+    const pinned = document.createElement('p');
+    pinned.className = 'pinned';
+    pinned.textContent = 'Pinned to the bottom of the frame.';
+    document.getElementById('what-this-is').appendChild(pinned);
+  });
+  const measure = frame => page.evaluate(([measure, frame]) => {
+    const slide = document.getElementById('what-this-is');
+    return eval('(' + measure + ')')(slide, eval('(' + frame + ')')(slide))
+      .find(item => item.key.startsWith('P:Pinned'));
+  }, [MEASURE, frame]);
+
+  const live = await measure(`() => document.querySelector('[data-deck-stage]').getBoundingClientRect()`);
+
+  await page.evaluate(() => Reveal.toggleOverview(true));
+  await page.waitForFunction(() => Reveal.isOverview() &&
+    document.querySelector('[data-deck-stage]').classList.contains('deck-stage-overview'));
+  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  await page.addScriptTag({ content: slideUnit.toString() });
+  const preview = await measure(CARD);
+
+  expect(preview.top, 'card vs page, as a fraction of each').toBeCloseTo(live.top, 2);
+  expect(preview.top + preview.height, 'off the bottom of the card').toBeLessThanOrEqual(1);
+});
+
 // Slides Quarto marks `data-visibility="uncounted"` (the incremental "same
 // slide again, one more bullet" pages) are absent from Reveal.getSlides(), so
 // the eager loader used to skip them and they stayed display:none — grey holes
