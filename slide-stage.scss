@@ -218,6 +218,7 @@ $ov-card-top: -$content-top * $ov-scale;
 $ov-rail: $rail-width * $ov-scale;
 $ov-rail-left: ($deck-width - $content-left - $rail-width) * $ov-scale;
 $ov-content-width: $content-width * $ov-scale;
+$ov-content-height: $content-height * $ov-scale;
 
 // Cards sit on a tint so the gap between them is visible; the stage's own
 // full-height rail and title artwork would span the whole grid, so they go.
@@ -233,6 +234,7 @@ $ov-content-width: $content-width * $ov-scale;
   isolation: isolate;
   overflow: visible !important;
   width: #{$ov-content-width} !important;
+  height: #{$ov-content-height} !important;
 }
 
 // Reveal's selection and hover outline hugs the bare content frame, which now
@@ -291,9 +293,11 @@ $ov-content-width: $content-width * $ov-scale;
 // with its own scaled size instead of shrinking it about its own corner. Zoom
 // alone would leave an auto-width block still filling the frame -- it refills
 // its containing block at the smaller scale -- which is why the frame above is
-// narrowed to the scaled content width. Restating a width on the children
-// instead would stretch the shrink-to-fit ones: a bulleted list is an
-// inline-block sized to its longest line, not to the frame.
+// scaled down to match. Its height too: a flex column (a theme's vfill) shares
+// out the frame's height, and an unscaled one hands the spacer more room than
+// the page does and pushes the slide's end off the card. Restating a width on
+// the children instead would stretch the shrink-to-fit ones: a bulleted list
+// is an inline-block sized to its longest line, not to the frame.
 .reveal.overview .slides section:not(.stack) > * {
   position: relative;
   z-index: 1;
@@ -379,7 +383,7 @@ html.reveal-print {
 // JavaScript — but only on slides it has actually laid out. Slides not yet
 // visited never get that offset, so in overview mode their text sits at the
 // top of the preview cell instead of the middle. While overview is open,
-// centre them with flexbox instead: the section spans the full cell height
+// centre them with flexbox instead: the section is the scaled content frame
 // and flex does the centring, with `top: 0` neutralising any JS offset
 // already applied to visited slides (`!important` beats inline styles). The
 // `display` override also beats reveal's inline `display` used for lazy
@@ -390,7 +394,6 @@ html.reveal-print {
   flex-direction: column;
   justify-content: center;
   top: 0 !important;
-  height: 100%;
 }
 
 // The logo and slide number occupy the bottom and top of the in-slide bar.
@@ -517,10 +520,9 @@ html.reveal-print {
   display: block !important;
   position: absolute;
   left: -#{$content-left};
-  // `bottom` alone is measured from the frame's lower edge, which the zoom
-  // does not move onto the page: hence the frame's height in page units less
-  // the page's own, before the live rule's 54px inset.
-  bottom: #{$content-height / $ov-scale + $content-top - $deck-height + 54px};
+  // `bottom` is measured from the frame's lower edge, which sits the page's
+  // bottom inset above the page's own.
+  bottom: #{54px - $content-bottom};
   width: #{$deck-width};
   text-align: center;
   font-size: 54px;
