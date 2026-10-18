@@ -770,3 +770,8 @@ $thumb-width: clamp(140px, 17vw, 260px);
 .print-pdf .deck-thumbs {
   display: none !important;
 }
+
+// Quarto pads code blocks 6px 9px, sized for reveal's 960x700 slide.
+.reveal pre.sourceCode code {
+  padding: 0.4em 0.7em;
+}
