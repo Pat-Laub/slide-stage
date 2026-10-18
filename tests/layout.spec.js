@@ -327,3 +327,13 @@ test('ink overhanging the left edge of a slide is not clipped', async ({ page })
   });
   expect(hit).toBe(true);
 });
+
+test('a code block may grow to the content frame before it scrolls', async ({ page }) => {
+  await page.goto(DECK + '#/code-slide');
+  await ready(page);
+  const { maxHeight, frame } = await page.evaluate(() => ({
+    maxHeight: parseFloat(getComputedStyle(document.querySelector('#code-slide pre code')).maxHeight),
+    frame: Reveal.getConfig().height
+  }));
+  expect(maxHeight).toBeGreaterThanOrEqual(frame);
+});
