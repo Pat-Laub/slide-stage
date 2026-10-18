@@ -233,8 +233,8 @@ $ov-content-height: $content-height * $ov-scale;
 .reveal.overview .slides section:not(.stack) {
   isolation: isolate;
   overflow: visible !important;
-  width: #{$ov-content-width} !important;
-  height: #{$ov-content-height} !important;
+  width: #{$ov-content-width};
+  height: #{$ov-content-height};
 }
 
 // Reveal's selection and hover outline hugs the bare content frame, which now
