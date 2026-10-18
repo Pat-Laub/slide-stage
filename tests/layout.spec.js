@@ -255,6 +255,30 @@ test('ordered-list markers are painted inside the list box', async ({ browser })
   await context.close();
 });
 
+// A marker wider than the gutter, such as `iii.`, ran into the item's text.
+test('a wide ordered-list marker keeps a gap before its text', async ({ page }) => {
+  await page.goto(DECK + '#/numbered-steps');
+  await ready(page);
+  const gaps = await page.evaluate(() => {
+    const slide = document.querySelector('.reveal .slides section.present');
+    slide.innerHTML = '<ol type="i"><li>bias</li><li>variance</li><li>mean squared error</li><li>consistency</li></ol>';
+    const roman = ['i', 'ii', 'iii', 'iv'];
+    return Array.from(slide.querySelectorAll('li')).map((li, k) => {
+      const probe = document.createElement('span');
+      probe.style.cssText = 'position:absolute;visibility:hidden;white-space:pre';
+      probe.style.font = getComputedStyle(li).font;
+      probe.textContent = roman[k] + '.';
+      li.appendChild(probe);
+      const marker = probe.getBoundingClientRect().width;
+      const em = parseFloat(getComputedStyle(li).fontSize) * li.getBoundingClientRect().width / li.offsetWidth;
+      probe.remove();
+      const ol = li.parentElement.getBoundingClientRect();
+      return (li.getBoundingClientRect().left - ol.left - marker) / em;
+    });
+  });
+  expect(Math.min(...gaps)).toBeGreaterThanOrEqual(0.2);
+});
+
 // Attribute values are matched case-insensitively in HTML, so a marker rule
 // keyed on `[type="A"]` silently also claims Quarto's `type="a"` lists; the `s`
 // flag that would fix that is dropped whole by Chrome, which is worse again --
