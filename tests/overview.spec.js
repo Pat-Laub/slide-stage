@@ -33,7 +33,7 @@ test.describe('slide overview', () => {
     const before = await height();
     await page.evaluate(() => Reveal.toggleOverview(true));
     await page.waitForFunction(() => Reveal.isOverview());
-    expect(Math.abs(await height() - before) / before).toBeLessThan(0.05);
+    expect(await height()).toBeCloseTo(before, 0);
   });
 
   for (const viewport of [
