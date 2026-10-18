@@ -337,3 +337,14 @@ test('a code block may grow to the content frame before it scrolls', async ({ pa
   }));
   expect(maxHeight).toBeGreaterThanOrEqual(frame);
 });
+
+test('a code block is padded in proportion to its text', async ({ page }) => {
+  await page.goto(DECK + '#/code-slide');
+  await ready(page);
+  const { left, top, fontSize } = await page.evaluate(() => {
+    const style = getComputedStyle(document.querySelector('#code-slide pre code'));
+    return { left: parseFloat(style.paddingLeft), top: parseFloat(style.paddingTop), fontSize: parseFloat(style.fontSize) };
+  });
+  expect(left).toBeGreaterThanOrEqual(0.5 * fontSize);
+  expect(top).toBeGreaterThanOrEqual(0.3 * fontSize);
+});
