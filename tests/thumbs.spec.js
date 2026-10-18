@@ -55,6 +55,21 @@ test.describe('thumbnail overview', () => {
     bake('resized.slides.html', 999);  // deliberately wrong, for the fallback
   });
 
+  for (const corner of ['stack-1', 'stack-6-slide-8']) {
+    test(`the current card opens centred, even at the grid's edge (#${corner})`, async ({ page }) => {
+      await ready(page, '/docs/stacked.slides.html#/' + corner);
+      await page.click('.deck-launcher-overview');
+      const off = await page.evaluate(() => {
+        const panel = document.querySelector('.deck-thumbs').getBoundingClientRect();
+        const card = document.querySelector('.deck-thumb.is-current').getBoundingClientRect();
+        return [card.left + card.width / 2 - (panel.left + panel.width / 2),
+                card.top + card.height / 2 - (panel.top + panel.height / 2)];
+      });
+      expect(Math.abs(off[0]), 'horizontally off centre').toBeLessThan(2);
+      expect(Math.abs(off[1]), 'vertically off centre').toBeLessThan(2);
+    });
+  }
+
   test('the grid button opens the baked panel, not reveal overview', async ({ page }) => {
     await ready(page, '/docs/stacked.slides.html');
     await page.click('.deck-launcher-overview');
