@@ -584,13 +584,19 @@ html.reveal-print {
 .reveal .slide ol > li {
   position: relative;
 }
+/* Like a native marker, ours is right-aligned a fixed gap before the text, so a
+   wide one such as `iii.` grows leftward into the gutter, not into the text.
+   Roman numerals get a wider gutter to hold them. */
+.reveal .slide ol[type="i"] {
+  padding-left: 2em;
+}
 .reveal .slide ol > li::before {
   content: counter(list-item, decimal) ".";
   position: absolute;
   top: 0;
-  left: -1em;
-  width: 1em;
-  text-align: left;
+  right: 100%;
+  padding-right: 0.3em;
+  white-space: nowrap;
   color: var(--r-main-color);
 }
 /* Attribute values are matched case-insensitively in HTML, so `[type="A"]`
