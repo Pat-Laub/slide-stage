@@ -22,6 +22,20 @@ async function openOverview(page, viewport, deck = '/docs/index.slides.html') {
 }
 
 test.describe('slide overview', () => {
+  test('a stretched figure keeps its size in overview', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/docs/index.slides.html#/lone-figure');
+    await page.waitForFunction(() => window.Reveal && Reveal.isReady());
+    const figure = page.locator('#lone-figure img.r-stretch');
+    await expect.poll(() => figure.evaluate(img => img.naturalWidth)).toBeGreaterThan(0);
+    await page.evaluate(() => Reveal.layout());
+    const height = () => figure.evaluate(img => parseFloat(img.style.height));
+    const before = await height();
+    await page.evaluate(() => Reveal.toggleOverview(true));
+    await page.waitForFunction(() => Reveal.isOverview());
+    expect(Math.abs(await height() - before) / before).toBeLessThan(0.05);
+  });
+
   for (const viewport of [
     { width: 1440, height: 900 },
     { width: 1024, height: 768 }
