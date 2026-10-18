@@ -678,7 +678,7 @@ $thumb-width: clamp(140px, 17vw, 260px);
   // The grid scrolls, the deck behind it does not.
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
-  padding: 24px;
+  container-type: size;
   background: #e8e9e9;
 }
 
@@ -697,6 +697,9 @@ $thumb-width: clamp(140px, 17vw, 260px);
   justify-content: start;
   align-content: start;
   width: max-content;
+  // Room to scroll any card, even one at the grid's edge, to the middle of the
+  // panel, as reveal's own overview centres the current slide.
+  padding: calc(50cqh - #{$thumb-width} * 9 / 32) calc(50cqw - #{$thumb-width} / 2);
 }
 
 .deck-thumb {
