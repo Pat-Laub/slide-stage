@@ -158,11 +158,12 @@ window.selectedAnnoteEl = null;
       var cardWidth = read('--deck-overview-card-width');
       var cardHeight = read('--deck-overview-card-height');
       var gap = read('--deck-overview-card-gap');
+      var scale = read('--deck-overview-scale') || 1;
       // No stylesheet, no opinion: leave reveal's own pitch alone.
       if (!cardWidth || !cardHeight || !gap) return inner.apply(this, arguments);
       return {
-        width: cardWidth + gap - REVEAL_OVERVIEW_MARGIN,
-        height: cardHeight + gap - REVEAL_OVERVIEW_MARGIN
+        width: cardWidth + gap / scale - REVEAL_OVERVIEW_MARGIN,
+        height: cardHeight + gap / scale - REVEAL_OVERVIEW_MARGIN
       };
     };
   }
