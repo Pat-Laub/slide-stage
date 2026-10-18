@@ -194,6 +194,10 @@ As does this one.
 
 And this one.
 
+## A lone figure {#lone-figure}
+
+![](unsw-logo.png)
+
 ## The last slide {#last-slide}
 
 There is nothing after this.
