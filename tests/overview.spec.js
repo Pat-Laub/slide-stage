@@ -1,12 +1,14 @@
 const { test, expect } = require('@playwright/test');
 
 // One slide unit in CSS pixels: the stage's fit transform times the extra scale
-// Reveal puts on `.slides` in overview. Measuring a slide instead would assume
-// how wide the overview frame is, which is exactly what these tests check.
+// Reveal and the stage put on `.slides` in overview. Measuring a slide instead
+// would assume how wide the overview frame is, which is exactly what these
+// tests check.
 function slideUnit() {
   const stage = document.querySelector('[data-deck-stage]').getBoundingClientRect();
-  const slides = new DOMMatrix(getComputedStyle(document.querySelector('.reveal .slides')).transform);
-  return (stage.width / 3744) * slides.a;
+  const style = getComputedStyle(document.querySelector('.reveal .slides'));
+  const scale = style.scale === 'none' ? 1 : parseFloat(style.scale);
+  return (stage.width / 3744) * new DOMMatrix(style.transform).a * scale;
 }
 
 async function openOverview(page, viewport, deck = '/docs/index.slides.html') {
@@ -316,10 +318,10 @@ test('every overview preview matches the full view of its slide', async ({ page 
   }
 });
 
-// A section is the content frame, and overview zooms its children onto the
-// card. Content laid out against the frame's height -- a flex column whose
-// spacer takes the spare room, as a theme's vfill does -- has to find that
-// height scaled with them, or the spare room grows and pushes it off the card.
+// A section is the content frame, and overview scales it onto the card.
+// Content laid out against the frame's height -- a flex column whose spacer
+// takes the spare room, as a theme's vfill does -- has to keep its place, or
+// the spare room grows and pushes it off the card.
 test('content pinned to the bottom of the frame keeps its place on the card', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/docs/index.slides.html#/what-this-is');
