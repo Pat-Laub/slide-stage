@@ -20,6 +20,8 @@ $launcher-icon: 120px !default;
 $artwork-inset: 48px !default;
 $content-width: $deck-width - $content-left - $content-right;
 $content-height: $deck-height - $content-top - $content-bottom;
+// Quarto caps code blocks at 500px, sized for reveal's 960x700 slide.
+$code-block-height: $content-height !default;
 
 // 28px x 3: the root size the authored canvas is drawn at.
 $presentation-font-size-root: 84px !default;
