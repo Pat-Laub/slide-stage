@@ -120,6 +120,21 @@ test.describe('thumbnail overview', () => {
     expect(await page.evaluate(() => Reveal.getCurrentSlide().id)).toBe(target);
   });
 
+  test('the grid follows the keys, keeping the current card centred', async ({ page }) => {
+    await ready(page, '/docs/stacked.slides.html');
+    await page.evaluate(() => Reveal.slide(2, 1));
+    await page.keyboard.press('o');
+    for (const key of ['l', 'l', 'j', 'j', 'h', 'k']) {
+      await page.keyboard.press(key);
+      await expect.poll(() => page.evaluate(() => {
+        const panel = document.querySelector('.deck-thumbs').getBoundingClientRect();
+        const card = document.querySelector('.deck-thumb.is-current').getBoundingClientRect();
+        return Math.max(Math.abs(card.left + card.width / 2 - (panel.left + panel.width / 2)),
+                        Math.abs(card.top + card.height / 2 - (panel.top + panel.height / 2)));
+      }), key).toBeLessThan(2);
+    }
+  });
+
   test('arrow and vim keys walk the grid as reveal s overview does', async ({ page }) => {
     await ready(page, '/docs/stacked.slides.html');
     await page.evaluate(() => Reveal.slide(2, 1));
