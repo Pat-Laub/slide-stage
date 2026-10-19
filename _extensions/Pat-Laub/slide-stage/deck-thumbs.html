@@ -197,7 +197,7 @@
       Reveal.on('slidechanged', function () {
         if (!isOpen()) return;
         var here = mark();
-        if (here) here.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+        if (here) here.scrollIntoView({ block: 'center', inline: 'center' });
       });
       return true;
     });
