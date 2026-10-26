@@ -732,12 +732,19 @@ $thumb-width: clamp(140px, 17vw, 260px);
 
 .deck-thumb-number {
   position: absolute;
-  right: 4px;
-  bottom: 3px;
+  right: 0;
+  top: 0;
+  padding: 3px 6px;
   font-family: inherit;
-  font-size: 11px;
+  font-size: 13px;
+  font-weight: 600;
   line-height: 1;
-  color: rgba($mainColor, 0.55);
+  color: #fff;
+  background: rgba($mainColor, 0.75);
+}
+
+.deck-thumb.is-current .deck-thumb-number {
+  background: $link-color;
 }
 
 // The way back out that does not also change slide, mirroring the role the
