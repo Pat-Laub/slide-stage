@@ -57,7 +57,7 @@
   var manifest = null;
   function load() {
     if (manifest) return manifest;
-    manifest = fetch(base() + 'index.json', { cache: 'force-cache' })
+    manifest = fetch(base() + 'index.json', { cache: 'no-cache' })
       .then(function (response) { return response.ok ? response.json() : null; })
       .catch(function () { return null; });
     return manifest;
