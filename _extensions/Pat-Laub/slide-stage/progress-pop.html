@@ -10,20 +10,23 @@
 <script>
 window.addEventListener('load', () => {
   const bar = document.querySelector('.reveal .progress');
-  if (!window.Reveal || !bar) return;
+  if (!window.Reveal || !bar || Reveal.isPrintView()) return;
   const pop = bar.appendChild(document.createElement('div'));
   pop.className = 'progress-pop';
   const fill = bar.querySelector('span');
+  // Follow the bar only until the fade-out ends.
+  let until = 0, frame = 0;
   const track = () => {
     pop.style.left = (100 * new DOMMatrix(getComputedStyle(fill).transform).a) + '%';
-    requestAnimationFrame(track);
+    frame = performance.now() < until ? requestAnimationFrame(track) : 0;
   };
-  track();
   let timer;
   Reveal.on('slidechanged', e => {
     if (!e.previousSlide) return;
     pop.textContent = Reveal.getSlidePastCount() + 1;
     bar.classList.add('popping');
+    until = performance.now() + 1600;
+    if (!frame) track();
     clearTimeout(timer);
     timer = setTimeout(() => bar.classList.remove('popping'), 1200);
   });
