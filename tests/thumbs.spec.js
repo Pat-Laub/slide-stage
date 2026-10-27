@@ -167,6 +167,20 @@ test.describe('thumbnail overview', () => {
     expect(await page.locator('.deck-thumbs').count()).toBe(0);
   });
 
+  test('the manifest is revalidated, never read from a stale cache', async ({ page }) => {
+    // A home-screen web app kept an old index.json under force-cache; after a
+    // redeploy its count disagreed and the iPad fell to reveal's overview.
+    await page.addInitScript(() => {
+      const fetch = window.fetch;
+      window.fetch = (url, init) => {
+        if (String(url).endsWith('index.json')) window.manifestCache = init && init.cache;
+        return fetch(url, init);
+      };
+    });
+    await ready(page, '/docs/stacked.slides.html');
+    expect(await page.evaluate(() => window.manifestCache)).toBe('no-cache');
+  });
+
   test('thumbnails that do not match the deck are not shown', async ({ page }) => {
     // 999 pictures for a handful of slides: the directory is stale, so the
     // cards would point at the wrong slides. Fall back rather than mislead.
