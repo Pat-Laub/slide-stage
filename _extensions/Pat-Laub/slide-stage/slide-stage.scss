@@ -140,6 +140,7 @@ html:not(.print-pdf) .reveal:not(.overview):not(.reveal-scroll) .slides section:
   left: 0 !important;
   bottom: 0 !important;
   width: #{$deck-width} !important;
+  height: 9px;
 }
 .reveal .slide-number {
   position: fixed !important;
