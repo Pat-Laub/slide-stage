@@ -372,3 +372,9 @@ test('a code block is padded in proportion to its text', async ({ page }) => {
   expect(left).toBeGreaterThanOrEqual(0.5 * fontSize);
   expect(top).toBeGreaterThanOrEqual(0.3 * fontSize);
 });
+
+test('the progress bar is scaled with the authored canvas', async ({ page }) => {
+  await page.goto(DECK);
+  await ready(page);
+  await expect(page.locator('.reveal .progress')).toHaveCSS('height', '9px');
+});
