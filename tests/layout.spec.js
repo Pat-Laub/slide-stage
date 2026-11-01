@@ -378,3 +378,11 @@ test('the progress bar is scaled with the authored canvas', async ({ page }) => 
   await ready(page);
   await expect(page.locator('.reveal .progress')).toHaveCSS('height', '9px');
 });
+
+test('a stretched figure reached by a slide link gets its height once the image loads', async ({ page }) => {
+  await page.goto(DECK);
+  await ready(page);
+  await page.evaluate(() => { location.hash = '#/lone-figure'; });
+  const img = page.locator('#lone-figure img');
+  await expect.poll(() => img.evaluate((el) => el.getBoundingClientRect().height)).toBeGreaterThan(100);
+});

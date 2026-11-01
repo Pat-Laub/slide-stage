@@ -196,7 +196,7 @@ And this one.
 
 ## A lone figure {#lone-figure}
 
-![](unsw-logo.png)
+![](lone-figure.png)
 
 ## The last slide {#last-slide}
 
