@@ -8,6 +8,18 @@
 window.selectedAnnoteEl = null;
 </script>
 <script>
+// reveal lays out an r-stretch image as soon as its data-src is swapped in; if
+// that image has not loaded yet the layout leaves it at height 0 and nothing
+// re-runs it. Lay out again when such an image finishes loading.
+document.addEventListener('load', function (e) {
+  var el = e.target;
+  if (el.tagName === 'IMG' && el.matches('.reveal .slides section > .r-stretch, .reveal .slides section > .stretch') &&
+      window.Reveal && Reveal.isReady && Reveal.isReady()) {
+    Reveal.layout();
+  }
+}, true);
+</script>
+<script>
 // Immediate URL-hash sync for reveal.js (defeats its replaceState throttle).
 //
 // With `history: false` (our setting) reveal.js keeps the address-bar `#` in
