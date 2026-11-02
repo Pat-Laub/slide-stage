@@ -33,3 +33,7 @@ A different footer, which must replace the first rather than stack on it.
 ::: footer
 Source: a second reference.
 :::
+
+## Punctuation after inline maths {#bare-math-punct}
+
+Each day, measure staff, $\mathsf{N}\bigl(\mu_1, 10^2\bigr)$, and students, $\mathsf{N}\bigl(\mu_2, 9.5^2\bigr)$.
