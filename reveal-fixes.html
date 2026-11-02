@@ -328,3 +328,26 @@ document.addEventListener('load', function (e) {
   }, true);
 })();
 </script>
+<script>
+// Keep at most one per-slide footer clone. Quarto's support.js appends one on
+// both `ready` and `slidechanged` but removes only one per change, so a deep
+// link to a footed slide leaves a stale clone behind.
+(function () {
+  var reveal = document.querySelector('.reveal');
+  if (!reveal || !window.MutationObserver) return;
+  function isClone(node) {
+    return node.nodeType === 1 && node.parentNode === reveal &&
+      node.classList.contains('footer') && !node.classList.contains('footer-default');
+  }
+  new MutationObserver(function (records) {
+    var newest = null;
+    records.forEach(function (r) {
+      r.addedNodes.forEach(function (n) { if (isClone(n)) newest = n; });
+    });
+    if (!newest) return;
+    Array.prototype.forEach.call(reveal.children, function (n) {
+      if (n !== newest && isClone(n)) n.remove();
+    });
+  }).observe(reveal, { childList: true });
+})();
+</script>
