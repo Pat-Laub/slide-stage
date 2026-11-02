@@ -20,3 +20,16 @@ type small enough to stay out of the way and large enough to read.
 ::: footer
 Source: a reference given in passing, not part of the argument.
 :::
+
+## A slide without a footer {#bare-no-footer}
+
+Between two footed slides, so moving through it shows whether the previous
+slide's footer is cleared.
+
+## A second slide footer {#bare-footer-2}
+
+A different footer, which must replace the first rather than stack on it.
+
+::: footer
+Source: a second reference.
+:::

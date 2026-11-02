@@ -328,3 +328,35 @@ document.addEventListener('load', function (e) {
   }, true);
 })();
 </script>
+<script>
+// Keep at most one per-slide footer clone.
+//
+// Quarto shows a slide's `::: footer` by cloning it into `.reveal`: once on
+// `ready` and again on every `slidechanged`, each time first removing *one*
+// earlier clone (a querySelector, not querySelectorAll). Opening the deck
+// directly on a footed slide fires both events at load, so two clones are
+// appended and only one is ever removed per navigation. The leftover stays on
+// screen across slides and draws on top of the next slide's own footer.
+//
+// Watch `.reveal` itself rather than hooking the events, so this holds
+// whichever order Quarto's listeners and ours run in: whenever a new clone
+// arrives, every older one goes.
+(function () {
+  var reveal = document.querySelector('.reveal');
+  if (!reveal || !window.MutationObserver) return;
+  function isClone(node) {
+    return node.nodeType === 1 && node.parentNode === reveal &&
+      node.classList.contains('footer') && !node.classList.contains('footer-default');
+  }
+  new MutationObserver(function (records) {
+    var newest = null;
+    records.forEach(function (r) {
+      r.addedNodes.forEach(function (n) { if (isClone(n)) newest = n; });
+    });
+    if (!newest) return;
+    Array.prototype.forEach.call(reveal.children, function (n) {
+      if (n !== newest && isClone(n)) n.remove();
+    });
+  }).observe(reveal, { childList: true });
+})();
+</script>

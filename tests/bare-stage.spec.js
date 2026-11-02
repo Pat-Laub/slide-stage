@@ -180,3 +180,22 @@ test('a slide footer sits inside its own card in overview', async ({ page }) => 
   expect(geometry.textBottom).toBeLessThan(geometry.cardBottom);
   expect(geometry.cardBottom - geometry.textBottom).toBeLessThan(geometry.cardWidth / 20);
 });
+
+// Quarto clones a slide's footer on both `ready` and `slidechanged`, which on a
+// deep link to a footed slide leaves two clones, and it removes only one per
+// navigation -- so one outlived its slide and stacked under the next footer.
+test('opening on a footed slide leaves one footer clone, cleared on leaving', async ({ page }) => {
+  await page.goto(BARE + '#/bare-footer');
+  await page.waitForFunction(() => window.Reveal && Reveal.isReady());
+  const clones = () => page.evaluate(() =>
+    [...document.querySelectorAll('.reveal > .footer:not(.footer-default)')]
+      .map(el => el.textContent.trim()));
+  const go = id => page.evaluate(id =>
+    Reveal.slide(Reveal.getIndices(document.getElementById(id)).h), id);
+
+  expect(await clones()).toHaveLength(1);
+  await go('bare-no-footer');
+  expect(await clones()).toEqual([]);
+  await go('bare-footer-2');
+  expect(await clones()).toEqual(['Source: a second reference.']);
+});
