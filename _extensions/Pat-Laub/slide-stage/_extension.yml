@@ -27,6 +27,8 @@ contributes:
       menu: false
       # reveal-fixes.html replaces reveal's own throttled hash handling.
       history: false
+      filters:
+        - math-punctuation.lua
       theme:
         - serif
         - slide-stage.scss
