@@ -47,6 +47,20 @@ the stage element and `deck-stage-open.html` reads them back, so the CSS box and
 the fit transform cannot drift apart. `resized.qmd` is a fixture at 1920 x 1080
 that holds them together.
 
+### Hiding the controls
+
+```yaml
+format:
+  slide-stage-revealjs:
+    stage-chrome: auto-hide
+```
+
+keeps reveal's arrows and the corner row out of sight until the mouse moves, and
+hides them again two seconds after it rests anywhere but on them. Keys never
+bring them up, so a talk driven from the keyboard or a clicker shows none of
+them, while someone reading the deck later still finds the arrows. A touch
+screen, which has no mouse to move, always shows them.
+
 ## Layout
 
 ```

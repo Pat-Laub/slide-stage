@@ -29,6 +29,7 @@ contributes:
       history: false
       filters:
         - math-punctuation.lua
+        - stage-chrome.lua
       theme:
         - serif
         - slide-stage.scss
