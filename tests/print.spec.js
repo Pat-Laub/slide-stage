@@ -38,3 +38,9 @@ test.describe('the print view', () => {
     expect(footers.slice(1)).toEqual([["The deck’s footer"], ["This slide’s own footer."]]);
   });
 });
+
+test('the print view draws no scrollbars on scrollable boxes', async ({ page }) => {
+  await page.goto('/docs/print.slides.html?print-pdf');
+  await page.waitForFunction(() => document.querySelector('.pdf-page .deck-print-chrome'));
+  expect(await page.evaluate(() => getComputedStyle(document.querySelector('.pdf-page')).scrollbarWidth)).toBe('none');
+});
