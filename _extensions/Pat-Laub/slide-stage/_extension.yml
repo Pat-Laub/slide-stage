@@ -39,4 +39,5 @@ contributes:
         - reveal-fixes.html
         - progress-pop.html
         - deck-thumbs.html
+        - print-view.html
         - deck-stage-close.html
