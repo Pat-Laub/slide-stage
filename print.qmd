@@ -1,0 +1,18 @@
+---
+title: "Printed Pages"
+format:
+  slide-stage-revealjs:
+    footer: "The deck's footer"
+---
+
+## A coloured slide {#print-coloured background-color="#cde"}
+
+Its background belongs to the whole page, in print as on screen.
+
+## A slide with its own footer {#print-own-footer}
+
+The printed page carries this footer rather than the deck's.
+
+::: footer
+This slide's own footer.
+:::
