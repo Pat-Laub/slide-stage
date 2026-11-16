@@ -34,7 +34,9 @@
     var pageW = 3744, pageH = 2108.16;
     var contentX = 336, contentY = 120, contentW = 3072, contentH = 1845;
     var st = document.createElement('style');
-    st.textContent = '@page{size:' + pageW + 'px ' + pageH + 'px;margin:0}';
+    st.textContent = '@page{size:' + pageW + 'px ' + pageH + 'px;margin:0}' +
+      // A browser set to always show scrollbars would print them on code blocks.
+      '.pdf-page,.pdf-page *{scrollbar-width:none!important}';
     document.head.appendChild(st);
     document.body.style.width = pageW + 'px';
     document.querySelectorAll('.pdf-page').forEach(function (page) {
