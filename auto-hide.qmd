@@ -1,0 +1,15 @@
+---
+title: "Auto-hiding Controls"
+format:
+  slide-stage-revealjs:
+    stage-chrome: auto-hide
+---
+
+## The controls rest out of sight {#auto-hide-first}
+
+A deck presented from the keyboard keeps its arrows and corner buttons out of
+the way until someone reaches for the mouse.
+
+## A second slide {#auto-hide-second}
+
+So there is somewhere for the arrows to go.

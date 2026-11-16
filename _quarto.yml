@@ -6,6 +6,7 @@ project:
     - bare.qmd
     - resized.qmd
     - stacked.qmd
+    - auto-hide.qmd
 
 # No theme layer here on purpose: the format extension is theme-neutral, so the
 # project default is the bare stage and index.qmd opts into the UNSW look.
