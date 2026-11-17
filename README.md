@@ -28,7 +28,11 @@ renders as a plain white page.
 ```scss
 $stage-artwork-image: none !default;      // title-slide artwork
 $stage-rail-background: transparent !default;
+$stage-overview-bg: #e8e9e9 !default;   // behind the overview grid
 ```
+
+It also loads no reveal base theme, so fonts, heading alignment and title-slide
+spacing are the theme layer's to choose.
 
 A theme layer sets them, and Quarto **appends** a consumer's `theme:` to the
 extension's own, so you never name the extension's internal path:
@@ -37,7 +41,7 @@ extension's own, so you never name the extension's internal path:
 format:
   slide-stage-revealjs:
     theme:
-      - unsw-theme.scss     # becomes [serif, slide-stage.scss, unsw-theme.scss]
+      - unsw-theme.scss     # becomes [slide-stage.scss, unsw-theme.scss]
 ```
 
 The geometry is likewise `!default` throughout — `$deck-width`, `$deck-height`,
@@ -60,6 +64,17 @@ hides them again two seconds after it rests anywhere but on them. Keys never
 bring them up, so a talk driven from the keyboard or a clicker shows none of
 them, while someone reading the deck later still finds the arrows. A touch
 screen, which has no mouse to move, always shows them.
+
+### Slide number pop
+
+```yaml
+format:
+  slide-stage-revealjs:
+    progress-pop: true
+```
+
+shows the slide number above the progress bar's leading edge for a moment after
+each slide change.
 
 ### Printing to PDF
 
