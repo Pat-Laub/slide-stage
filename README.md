@@ -61,6 +61,19 @@ bring them up, so a talk driven from the keyboard or a clicker shows none of
 them, while someone reading the deck later still finds the arrows. A touch
 screen, which has no mouse to move, always shows them.
 
+### Printing to PDF
+
+Press <kbd>⌘P</kbd>/<kbd>Ctrl+P</kbd> on the deck and choose "Save as PDF". The
+deck loads its own `?print-pdf` view in a hidden frame and opens the print
+dialog on that once the fonts and images are in, so each page is the whole
+3744 × 2106 stage -- rail, title artwork, slide backgrounds and footer included
+-- rather than a screenshot of the browser window. Only the shortcut is caught;
+the browser's File → Print menu still prints the screen.
+
+`print-view.html` does the page composition, so a script that loads
+`?print-pdf` in headless Chrome gets the same pages without asking for the
+dialog.
+
 ## Layout
 
 ```
