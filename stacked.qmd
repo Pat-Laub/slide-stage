@@ -1,5 +1,8 @@
 ---
 title: "Stacked Stage"
+format:
+  slide-stage-revealjs:
+    deck-thumbs: true
 ---
 
 <!-- Six stacks of eight, which is more than reveal's overview view distance:

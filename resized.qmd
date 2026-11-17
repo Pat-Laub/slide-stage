@@ -4,6 +4,7 @@ format:
   slide-stage-revealjs:
     theme:
       - resized-theme.scss
+    deck-thumbs: true
 ---
 
 ## A stage at a different authored size {#resized-content}

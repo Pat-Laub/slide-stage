@@ -191,3 +191,13 @@ test.describe('thumbnail overview', () => {
     expect(await page.locator('.deck-thumbs').count()).toBe(0);
   });
 });
+
+test('a deck that does not ask for thumbnails never looks for them', async ({ page }) => {
+  const asked = [];
+  page.on('request', request => { if (request.url().includes('.thumbs/')) asked.push(request.url()); });
+  await page.goto('/docs/index.slides.html');
+  await page.waitForFunction(() => window.Reveal && Reveal.isReady());
+  await page.click('.deck-launcher-overview');
+  expect(await page.evaluate(() => Reveal.isOverview())).toBe(true);
+  expect(asked).toEqual([]);
+});
