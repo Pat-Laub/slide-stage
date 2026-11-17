@@ -41,7 +41,7 @@ extension's own, so you never name the extension's internal path:
 format:
   slide-stage-revealjs:
     theme:
-      - unsw-theme.scss     # becomes [slide-stage.scss, unsw-theme.scss]
+      - my-theme.scss       # becomes [slide-stage.scss, my-theme.scss]
 ```
 
 The geometry is likewise `!default` throughout — `$deck-width`, `$deck-height`,
@@ -99,7 +99,7 @@ _extensions/Pat-Laub/slide-stage/
     reveal-fixes.html       five independent reveal.js patches
     deck-thumbs.html        the overview grid, from baked slide images
     slide-stage.scss        authoring geometry and structure, no branding
-unsw-theme.scss             the UNSW look, layered on top by index.qmd
+fixture-theme.scss          a plain theme layer, used by index.qmd
 index.qmd                   the themed fixture the geometry tests measure
 bare.qmd                    the same stage with no theme layer at all
 resized.qmd                 the same stage at a different authored size

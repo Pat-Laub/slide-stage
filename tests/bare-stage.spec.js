@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 
 // The stage draws the page furniture but owns none of its colour. A deck that
 // loads the format extension and no theme layer must still lay out in authored
-// units, and must come out unbranded -- that is the contract a non-UNSW
+// units, and must come out unbranded -- that is the contract an unbranded
 // consumer (scribble) relies on.
 
 const BARE = '/docs/bare.slides.html';
@@ -62,7 +62,7 @@ test('the bare stage carries no branding', async ({ page }) => {
 test('the themed deck does carry the branding', async ({ page }) => {
   await page.goto(THEMED);
   const themed = await geometry(page);
-  expect(themed.rail.background).toBe('rgb(254, 220, 0)');
+  expect(themed.rail.background).toBe('rgb(47, 111, 143)');
   expect(themed.artwork.image).toContain('svg');
 });
 

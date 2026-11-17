@@ -199,7 +199,7 @@ test.describe('slide overview', () => {
     );
 
     for (const { id, card, rail, artwork } of geometry) {
-      expect(rail.colour, id).toBe('rgb(254, 220, 0)');
+      expect(rail.colour, id).toBe('rgb(47, 111, 143)');
       expect(rail.left, id).toBeGreaterThanOrEqual(card.left);
       expect(rail.top, id).toBeGreaterThanOrEqual(card.top);
       expect(rail.left + rail.width, id).toBeLessThanOrEqual(card.left + card.width + 0.01);

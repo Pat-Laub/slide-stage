@@ -5,8 +5,8 @@ author: "slide-stage"
 format:
   slide-stage-revealjs:
     theme:
-      - unsw-theme.scss
-    logo: unsw-logo.png
+      - fixture-theme.scss
+    logo: fixture-logo.svg
     progress-pop: true
 ---
 
@@ -58,7 +58,7 @@ $$ \bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i, \qquad \tilde{\mu} = \operatorname*{
 
 ## An image {#an-image}
 
-![A logo, standing in for a figure](unsw-logo.png){width="40%"}
+![A logo, standing in for a figure](fixture-logo.svg){width="40%"}
 
 ## Prose that fills the frame {#wide-prose}
 
