@@ -31,7 +31,6 @@ contributes:
         - math-punctuation.lua
         - stage-chrome.lua
       theme:
-        - serif
         - slide-stage.scss
       include-before-body:
         - deck-stage-open.html
