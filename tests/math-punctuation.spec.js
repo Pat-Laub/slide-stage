@@ -38,21 +38,22 @@ test('punctuation after inline maths stays on the formula\'s line', async ({ pag
 
 // Likewise between an opening bracket and the formula after it, in every
 // browser: "(" was left alone at the end of a line.
-test('an opening bracket stays on the line of the inline maths after it', async ({ page }) => {
-  await page.goto(BARE + '#/bare-math-open');
+for (const [id, mark] of [['bare-math-open', '('], ['bare-math-quote', '\u201C']]) {
+test(`an opening ${mark} stays on the line of the inline maths after it`, async ({ page }) => {
+  await page.goto(BARE + '#/' + id);
   await page.waitForFunction(() => window.Reveal && Reveal.isReady());
 
-  const lines = await page.evaluate(() => {
-    const para = document.querySelector('section#bare-math-open p');
+  const lines = await page.evaluate(([id, mark]) => {
+    const para = document.querySelector(`section#${id} p`);
     const math = para.querySelector('.math.inline');
     const walker = document.createTreeWalker(para, NodeFilter.SHOW_TEXT);
     let open = null;
     while (walker.nextNode()) {
       const node = walker.currentNode;
       if (math.contains(node)) break;
-      if (node.textContent.includes('(')) open = node;
+      if (node.textContent.includes(mark)) open = node;
     }
-    const at = open.textContent.lastIndexOf('(');
+    const at = open.textContent.lastIndexOf(mark);
     const range = document.createRange();
     range.setStart(open, at);
     range.setEnd(open, at + 1);
@@ -64,7 +65,8 @@ test('an opening bracket stays on the line of the inline maths after it', async 
       openBottom: range.getBoundingClientRect().bottom,
       mathBottom: math.getBoundingClientRect().bottom
     };
-  });
+  }, [id, mark]);
 
   expect(lines.mathBottom).toBeLessThan(lines.openBottom + 5);
 });
+}

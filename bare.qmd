@@ -41,3 +41,7 @@ Each day, measure staff, $\mathsf{N}\bigl(\mu_1, 10^2\bigr)$, and students, $\ma
 ## Brackets before inline maths {#bare-math-open}
 
 Let the age group be split into two bands ($x_1$: under 40, $x_2$: 40 and over).
+
+## Quotes before inline maths {#bare-math-quote}
+
+Wilks applies when the null is a set of equalities and the alternative is everything else ("$\neq$").
