@@ -37,3 +37,10 @@ test('the slide number still pops on a slide change', async ({ page }) => {
   await page.keyboard.press('ArrowRight');
   await expect(page.locator('.reveal .progress.popping .progress-pop')).toHaveText('2');
 });
+
+test('a deck that does not ask for it has no pop', async ({ page }) => {
+  await page.goto('/docs/bare.slides.html');
+  await page.waitForFunction(() => window.Reveal && Reveal.isReady());
+  await page.keyboard.press('ArrowRight');
+  await expect(page.locator('.progress-pop')).toHaveCount(0);
+});
