@@ -113,8 +113,15 @@ Each cell is therefore the whole authored canvas, and a fifty-slide deck is
 fifty of them at once: on an iPad Pro that kills Safari's web process a few
 seconds after the grid opens, every time, before you have scrolled anywhere.
 
-So the stage can show pictures instead. If a directory sits beside the deck
-named after it with the final `.html` replaced by `.thumbs`, the grid button
+So the stage can show pictures instead. A deck opts in with
+
+```yaml
+format:
+  slide-stage-revealjs:
+    deck-thumbs: true
+```
+
+and then, if a directory sits beside the deck named after it with the final `.html` replaced by `.thumbs`, the grid button
 and the Esc and O keys open a plain scroller of those images rather than
 reveal's overview. No section is transformed, unloaded or touched, and
 `loading="lazy"` leaves the browser decoding only the cards on screen. The
