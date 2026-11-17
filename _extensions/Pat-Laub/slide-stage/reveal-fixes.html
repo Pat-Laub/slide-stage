@@ -326,6 +326,39 @@ document.addEventListener('load', function (e) {
       document.body.style.transition = DEFAULT_TRANSITION;
     }
   }, true);
+
+  // Z toggles zoom at the pointer: a key press needs no click to land on the
+  // slide. The plugin keeps its own level, so its toggle is tried a second time
+  // if the page did not end up in the state asked for.
+  var pointer = null;
+  window.addEventListener('mousemove', function (e) {
+    pointer = { x: e.clientX, y: e.clientY };
+  }, true);
+
+  function pluginToggle() {
+    var p = pointer || { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    var init = { bubbles: true, clientX: p.x, clientY: p.y };
+    init[zoomModifierProp()] = true;
+    Reveal.getRevealElement().dispatchEvent(new MouseEvent('mousedown', init));
+  }
+
+  function setZoom(want) {
+    if (Reveal.isOverview() || isZoomed() === want) return;
+    pluginToggle();
+    if (isZoomed() !== want) pluginToggle();
+  }
+
+  function bind() {
+    if (!window.Reveal || !Reveal.isReady || !Reveal.isReady()) return false;
+    Reveal.addKeyBinding({ keyCode: 90, key: 'Z', description: 'Zoom in/out at the pointer' },
+      function () { setZoom(!isZoomed()); });
+    Reveal.on('slidechanged', function () { setZoom(false); });
+    return true;
+  }
+  if (!bind()) {
+    var iv = setInterval(function () { if (bind()) clearInterval(iv); }, 50);
+    setTimeout(function () { clearInterval(iv); }, 10000);
+  }
 })();
 </script>
 <script>
