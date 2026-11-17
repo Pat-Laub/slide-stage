@@ -35,3 +35,36 @@ test('punctuation after inline maths stays on the formula\'s line', async ({ pag
   expect(lines.map(l => l.punct)).toEqual([',', '.']);
   for (const l of lines) expect(l.punctBottom).toBeLessThan(l.mathBottom + 5);
 });
+
+// Likewise between an opening bracket and the formula after it, in every
+// browser: "(" was left alone at the end of a line.
+test('an opening bracket stays on the line of the inline maths after it', async ({ page }) => {
+  await page.goto(BARE + '#/bare-math-open');
+  await page.waitForFunction(() => window.Reveal && Reveal.isReady());
+
+  const lines = await page.evaluate(() => {
+    const para = document.querySelector('section#bare-math-open p');
+    const math = para.querySelector('.math.inline');
+    const walker = document.createTreeWalker(para, NodeFilter.SHOW_TEXT);
+    let open = null;
+    while (walker.nextNode()) {
+      const node = walker.currentNode;
+      if (math.contains(node)) break;
+      if (node.textContent.includes('(')) open = node;
+    }
+    const at = open.textContent.lastIndexOf('(');
+    const range = document.createRange();
+    range.setStart(open, at);
+    range.setEnd(open, at + 1);
+    // Make the bracket end exactly at the right edge of the paragraph.
+    const box = para.getBoundingClientRect();
+    const scale = box.width / para.offsetWidth;
+    para.style.width = `${(range.getBoundingClientRect().right - box.left) / scale + 0.5}px`;
+    return {
+      openBottom: range.getBoundingClientRect().bottom,
+      mathBottom: math.getBoundingClientRect().bottom
+    };
+  });
+
+  expect(lines.mathBottom).toBeLessThan(lines.openBottom + 5);
+});
